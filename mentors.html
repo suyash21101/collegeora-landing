@@ -21,6 +21,17 @@
 .mb-perk-ico{width:34px;height:34px;border-radius:9px;background:rgba(59,130,212,.15);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
 .mb-perk h4{font-size:13px;font-weight:700;color:var(--cream);margin-bottom:2px;}
 .mb-perk p{font-size:12px;color:rgba(246,244,239,.42);line-height:1.6;}
+@media(max-width:768px){
+  .mentor-grid{grid-template-columns:1fr 1fr;}
+  .mentor-band{grid-template-columns:1fr;padding:32px 24px;gap:28px;}
+}
+@media(max-width:480px){
+  .filters{padding:16px;gap:10px;}
+  .filter-sep{display:none;}
+  .mentor-grid{grid-template-columns:1fr;}
+  .mc{padding:22px 18px;}
+  .mc-head,.mc-stats{flex-wrap:wrap;}
+}
 </style></head><body>
 <nav><a class="nav-logo" href="index.html">College<span class="dot">Ora</span></a><ul class="nav-links"><li><a href="how-it-works.html">How it works</a></li><li><a href="mentors.html" class="active">Mentors</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="community.html">Community</a></li></ul><div class="nav-actions"><a class="btn-ghost" href="login.html">Log in</a><a class="btn-primary" href="community.html">Join waitlist →</a></div></nav>
 <div class="page-hero"><div class="bg-grid"></div><div class="orb"></div><div class="page-hero-content wrap"><div class="page-eyebrow fade-up d1">Peer Network</div><h1 class="fade-up d2">340+ mentors.<br><em>All current students.</em></h1><p class="fade-up d3">Every mentor on CollegeOra is a verified current student or recent grad from a top-25 US university — vetted, trained, and matched based on your school list, major, and background.</p></div></div>

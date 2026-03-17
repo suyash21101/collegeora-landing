@@ -32,6 +32,16 @@
 .wl-avatars{display:flex;}
 .wl-av{width:28px;height:28px;border-radius:50%;border:2px solid var(--white);margin-left:-7px;font-size:13px;display:flex;align-items:center;justify-content:center;background:var(--cobalt);}
 .wl-av:first-child{margin-left:0;}
+@media(max-width:768px){
+  #join .wrap > div{grid-template-columns:1fr !important;gap:36px !important;}
+  .form-row{grid-template-columns:1fr;}
+  .fp-head,.fp-footer,.wl-count{flex-wrap:wrap;}
+}
+@media(max-width:480px){
+  .waitlist-card{padding:28px 18px;}
+  .feed-post{padding:18px;}
+  .cb{gap:12px;}
+}
 </style></head><body>
 <nav><a class="nav-logo" href="index.html">College<span class="dot">Ora</span></a><ul class="nav-links"><li><a href="how-it-works.html">How it works</a></li><li><a href="mentors.html">Mentors</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="community.html" class="active">Community</a></li></ul><div class="nav-actions"><a class="btn-ghost" href="login.html">Log in</a><a class="btn-primary" href="#join">Join waitlist →</a></div></nav>
 <div class="page-hero"><div class="bg-grid"></div><div class="orb"></div><div class="page-hero-content wrap"><div class="page-eyebrow fade-up d1">Community</div><h1 class="fade-up d2">4,200 students.<br><em>One community.</em></h1><p class="fade-up d3">Join the fastest-growing US college application community. Early access, locked pricing, and a network of students applying to the same schools you are.</p></div></div>

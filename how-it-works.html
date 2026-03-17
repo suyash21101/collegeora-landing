@@ -130,6 +130,23 @@
 .ov-cell.active .ov-sub{color:rgba(246,244,239,.4);}
 .ov-phase{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--cobalt);margin-bottom:6px;}
 .ov-cell.active .ov-phase{color:rgba(59,130,212,.7);}
+@media(max-width:768px){
+  .journey-phase-banner,.cta-band{flex-direction:column;align-items:flex-start;}
+  .steps-grid,.dg-grid,.overview-strip{grid-template-columns:1fr;}
+  .step-card.full{grid-column:auto;}
+  .phase-tab{flex:1 1 calc(50% - 6px);}
+}
+@media(max-width:480px){
+  .timeline{padding-left:34px;}
+  .timeline::before{left:12px;}
+  .tl-dot{left:-34px;width:28px;height:28px;font-size:12px;}
+  .tt-row{gap:14px;}
+  .tt-icon{width:46px;height:46px;font-size:20px;}
+  .journey-phase-banner,.cta-band,.step-card{padding:22px 18px;}
+  .cta-btns{width:100%;flex-direction:column;}
+  .btn-cta{width:100%;justify-content:center;}
+  .phase-tab{min-width:0;flex-basis:100%;}
+}
 </style>
 </head>
 <body>

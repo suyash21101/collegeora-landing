@@ -281,6 +281,80 @@ h1.hero-h em{font-style:italic;color:var(--cobalt);}
 .tr-divider{height:1px;background:rgba(255,255,255,.08);margin:18px 0;}
 .tr-lbl{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cobalt);margin-bottom:5px;}
 .tr-val{font-size:14px;font-weight:600;color:var(--cream);}
+
+@media(max-width:768px){
+  .hero{min-height:auto;padding:78px 16px 56px;justify-content:flex-end;}
+  .hero-content{max-width:100%;}
+  .hero-eyebrow{margin-bottom:20px;padding:8px 12px;border:1px solid rgba(59,130,212,.18);border-radius:999px;background:rgba(255,255,255,.03);}
+  .hero-eyebrow::before{width:18px;}
+  h1.hero-h{font-size:clamp(42px,14vw,72px);line-height:.98;letter-spacing:-1.5px;}
+  .hero-sub{font-size:16px;max-width:36ch;margin-bottom:28px;color:rgba(246,244,239,.64);}
+  .hero-btns{gap:10px;}
+  .hero-stats{gap:12px;flex-wrap:wrap;margin-top:40px;padding-top:22px;border-top:none;}
+  .hero-stats > div{min-width:140px;flex:1;padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.03);}
+  #schools,#screenshots,#stats{padding-left:16px;padding-right:16px;}
+  .schools-label{text-align:left;}
+  .schools-row{justify-content:flex-start;gap:8px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;scrollbar-width:none;}
+  .schools-row::-webkit-scrollbar{display:none;}
+  .school-pill{padding:10px 14px;border:1px solid var(--border);border-radius:999px;background:var(--white);white-space:nowrap;}
+  .school-pill:last-child{border:1px solid var(--border);}
+  #screenshots{padding-top:72px;padding-bottom:72px;}
+  .screenshots-header{text-align:left;margin-bottom:36px;}
+  .screenshots-header p{margin:0;max-width:34ch;}
+  .screen-tabs{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px;margin:0 -4px 28px;scrollbar-width:none;scroll-snap-type:x proximity;}
+  .screen-tabs::-webkit-scrollbar{display:none;}
+  .screen-tab{min-width:132px;align-items:flex-start;padding:12px 14px;scroll-snap-align:start;background:rgba(255,255,255,.04);}
+  .screen-tab .tab-name{white-space:normal;}
+  .screen-panel.active{display:flex;flex-direction:column;}
+  .browser-frame{border-radius:18px;box-shadow:0 18px 48px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.06);}
+  .browser-bar{padding:9px 12px;}
+  .browser-url{font-size:10px;}
+  .screen-caption{text-align:left;margin-top:14px;padding:0 2px;}
+  .dash-grid,.vp-grid,.steps,.mp-grid,.pp-grid,.testi-grid,.stats-row{grid-template-columns:1fr;}
+  .steps::before{display:none;}
+  .step,.stat-cell{padding-left:20px;padding-right:20px;}
+  .essay-layout,.cal-layout,.mentor-layout{grid-template-columns:1fr;height:auto;}
+  .essay-editor-pane,.cal-main{border-right:none;border-bottom:1px solid var(--border);}
+  .cal-events-panel,.mentor-list{border-left:none;border-right:none;border-top:1px solid var(--border);}
+  .mentor-layout{gap:0;}
+  .chat-header{flex-wrap:wrap;}
+  .chat-msg{max-width:88%;}
+  .app-table,.browser-frame{overflow:auto;}
+  .app-table-head,.app-table-row{min-width:560px;}
+  .radar-wrap svg{max-width:100%;height:auto;}
+  .tc.feat{grid-template-columns:1fr;gap:24px;}
+}
+
+@media(max-width:480px){
+  .hero{padding:68px 14px 44px;}
+  .hero-grid{background-size:48px 48px;}
+  .orb-1{width:420px;height:420px;top:-120px;right:-180px;opacity:.8;}
+  .orb-2{width:280px;height:280px;bottom:-110px;left:-120px;}
+  .arc,.arc2{display:none;}
+  .hero-eyebrow{margin-bottom:16px;font-size:10px;padding:7px 10px;}
+  .btn-hero{width:100%;justify-content:center;padding:13px 20px;}
+  .hero-stats{flex-direction:column;gap:10px;}
+  #schools,#screenshots,#stats{padding-left:14px;padding-right:14px;}
+  .schools-row{margin-right:-4px;}
+  .screenshots-header{margin-bottom:28px;}
+  .screenshots-header h2{font-size:clamp(30px,11vw,38px);}
+  .screenshots-header p{font-size:14px;}
+  .screen-tabs{margin-bottom:22px;}
+  .screen-tab{min-width:118px;padding:11px 12px;border-radius:14px;}
+  .screen-tab .tab-icon{font-size:16px;}
+  .screen-tab .tab-name{font-size:11px;}
+  .phase-legend{justify-content:flex-start;}
+  .dash-grid{gap:8px;}
+  .essay-editor-pane,.ai-panel,.cal-main,.cal-events-panel,.mentor-list,.chat-pane{min-width:0;}
+  .cal-grid{gap:1px;}
+  .cal-day{height:34px;}
+  .browser-frame{border-radius:16px;}
+  .screen-caption{font-size:12px;line-height:1.55;}
+  .vp-card,.pp-card,.mp-card,.tc,.step{padding-left:20px;padding-right:20px;}
+  .stat-cell{padding-top:28px;padding-bottom:28px;}
+  .stat-n{font-size:44px;}
+  .view-all .btn-view,.how-cta .btn-how{width:100%;justify-content:center;}
+}
 </style>
 </head>
 <body>
