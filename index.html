@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CollegeOra — The college application, organized.</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* HERO */
+.hero{min-height:91vh;background:var(--navy-deep);display:flex;flex-direction:column;justify-content:center;padding:100px 52px 80px;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,212,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,212,.05) 1px,transparent 1px);background-size:80px 80px;}
+.orb-1{position:absolute;top:-180px;right:-80px;width:680px;height:680px;background:radial-gradient(circle,rgba(59,130,212,.18) 0%,transparent 65%);}
+.orb-2{position:absolute;bottom:-180px;left:-80px;width:480px;height:480px;background:radial-gradient(circle,rgba(201,137,58,.1) 0%,transparent 65%);}
+.arc{position:absolute;top:-260px;right:-160px;width:740px;height:740px;border:1px solid rgba(59,130,212,.09);border-radius:50%;}
+.arc2{position:absolute;top:-140px;right:-40px;width:500px;height:500px;border:1px solid rgba(59,130,212,.05);border-radius:50%;}
+
+.hero-content{position:relative;z-index:2;max-width:700px;}
+.hero-eyebrow{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--cobalt);margin-bottom:26px;display:inline-flex;align-items:center;gap:10px;}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--cobalt);}
+h1.hero-h{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,8.5vw,100px);font-weight:700;line-height:.92;letter-spacing:-2.5px;color:var(--cream);margin-bottom:28px;}
+h1.hero-h em{font-style:italic;color:var(--cobalt);}
+.hero-sub{font-size:18px;color:rgba(246,244,239,.52);max-width:500px;line-height:1.72;margin-bottom:44px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-hero{font-size:15px;font-weight:700;padding:14px 32px;border-radius:var(--r-lg);text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s;cursor:pointer;border:none;}
+.btn-hero-p{background:var(--cobalt);color:var(--white);}
+.btn-hero-p:hover{background:#2d6cbf;transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,130,212,.38);}
+.btn-hero-g{background:rgba(255,255,255,.07);color:rgba(246,244,239,.85);border:1.5px solid rgba(255,255,255,.16);}
+.btn-hero-g:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);}
+.hero-stats{position:relative;z-index:2;display:flex;gap:48px;margin-top:72px;padding-top:44px;border-top:1px solid rgba(255,255,255,.07);}
+.hs-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(107,141,176,.6);margin-bottom:4px;}
+.hs-num{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--cream);line-height:1;}
+.hs-sub{font-size:12px;color:rgba(246,244,239,.3);margin-top:3px;}
+
+/* SCHOOL LOGOS STRIP */
+#schools{background:var(--white);padding:36px 52px;}
+.schools-strip{max-width:1100px;margin:0 auto;}
+.schools-label{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);text-align:center;margin-bottom:20px;}
+.schools-row{display:flex;gap:0;justify-content:center;flex-wrap:wrap;}
+.school-pill{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--text-3);padding:8px 20px;border-right:1px solid var(--border);letter-spacing:-.3px;transition:color .15s;}
+.school-pill:last-child{border:none;}
+.school-pill:hover{color:var(--cobalt);}
+
+/* APP SCREENSHOTS SECTION */
+#screenshots{background:var(--navy-deep);padding:96px 52px;}
+.screenshots-header{text-align:center;margin-bottom:64px;}
+.screenshots-header h2{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,54px);font-weight:700;letter-spacing:-1px;line-height:1.05;color:var(--cream);margin-bottom:16px;}
+.screenshots-header h2 em{font-style:italic;color:var(--cobalt);}
+.screenshots-header p{font-size:16px;color:rgba(246,244,239,.44);max-width:500px;margin:0 auto;}
+
+/* TAB SWITCHER */
+.screen-tabs{display:flex;gap:6px;justify-content:center;margin-bottom:44px;flex-wrap:wrap;}
+.screen-tab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 16px;border-radius:12px;border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:rgba(246,244,239,.4);cursor:pointer;transition:all .2s;text-align:center;}
+.screen-tab:hover:not(.active){border-color:rgba(255,255,255,.18);color:rgba(246,244,239,.65);}
+.screen-tab.active{background:rgba(59,130,212,.14);border-color:rgba(59,130,212,.45);color:var(--cobalt);}
+.screen-tab .tab-phase{font-family:'Space Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;}
+.screen-tab.active .tab-phase{color:rgba(59,130,212,.7);}
+.screen-tab .tab-name{font-size:12px;font-weight:600;white-space:nowrap;}
+.screen-tab .tab-icon{font-size:18px;}
+.screen-panel{display:none;animation:fadeUp .3s ease forwards;}.screen-panel.active{display:block;}
+/* Phase color accents */
+.tab-p1{} .tab-p1.active{background:rgba(201,137,58,.12);border-color:rgba(201,137,58,.4);color:var(--gold);}
+.tab-p1.active .tab-phase{color:rgba(201,137,58,.7);}
+.tab-p2a{} .tab-p2b{} .tab-p2c{}
+.tab-p3a{} .tab-p3a.active{background:rgba(108,79,212,.12);border-color:rgba(108,79,212,.4);color:var(--purple);}
+.tab-p3a.active .tab-phase{color:rgba(108,79,212,.7);}
+.tab-p3b{} .tab-p3b.active{background:rgba(14,116,144,.12);border-color:rgba(14,116,144,.4);color:var(--teal);}
+.tab-p3b.active .tab-phase{color:rgba(14,116,144,.7);}
+.tab-p4{} .tab-p4.active{background:rgba(26,122,74,.12);border-color:rgba(26,122,74,.4);color:var(--green);}
+.tab-p4.active .tab-phase{color:rgba(26,122,74,.7);}
+/* Phase legend */
+.phase-legend{display:flex;gap:16px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;}
+.pl-item{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(246,244,239,.3);}
+.pl-dot{width:8px;height:8px;border-radius:50%;}
+.screen-caption{text-align:center;font-size:13px;color:rgba(246,244,239,.4);margin-top:20px;line-height:1.6;}
+.screen-caption strong{color:rgba(246,244,239,.65);}
+/* Score ring */
+.score-ring{width:72px;height:72px;position:relative;flex-shrink:0;}
+.score-ring svg{transform:rotate(-90deg);}
+.score-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-ring-n{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;line-height:1;}
+.score-ring-l{font-family:'Space Mono',monospace;font-size:7px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);margin-top:1px;}
+/* Radar chart mock */
+.radar-wrap{display:flex;align-items:center;justify-content:center;padding:12px;}
+/* College match card */
+.cm-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+.cm-card:hover{background:var(--cobalt-lt);}
+.cm-logo{width:36px;height:36px;border-radius:8px;background:var(--cream);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.cm-match-bar{flex:1;height:5px;border-radius:3px;background:var(--border);overflow:hidden;}
+.cm-match-fill{height:100%;border-radius:3px;}
+/* Forum mock */
+.forum-post{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.fp-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.fp-preview{font-size:11px;color:var(--text-3);line-height:1.55;}
+.fp-meta{display:flex;gap:10px;margin-top:8px;}
+.fp-m{font-family:'Space Mono',monospace;font-size:9px;color:var(--text-3);}
+
+
+/* ─── SCREENSHOT 1: DASHBOARD ─── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
+.dash-stat{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.dash-stat-n{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--navy);line-height:1;}
+.dash-stat-l{font-size:11px;color:var(--text-3);margin-top:3px;}
+.dash-stat-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-top:5px;display:inline-block;}
+.app-table{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.app-table-head{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);}
+.app-table-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 14px;border-bottom:1px solid var(--border);align-items:center;}
+.app-table-row:last-child{border:none;}
+.app-table-row:hover{background:var(--cream);}
+.school-name{font-size:13px;font-weight:600;color:var(--navy);}
+.school-type{font-size:11px;color:var(--text-3);margin-top:1px;}
+.deadline-chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;display:inline-block;}
+.dc-red{background:var(--red-lt);color:var(--red);}
+.dc-am{background:var(--amber-lt);color:var(--amber);}
+.dc-gr{background:var(--green-lt);color:var(--green);}
+.dc-co{background:var(--cobalt-lt);color:var(--cobalt);}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+.sd-gr{background:var(--green);}.sd-am{background:var(--amber);}.sd-re{background:var(--red);}
+.essay-progress{display:flex;gap:4px;align-items:center;}
+.essay-pip{width:8px;height:8px;border-radius:50%;background:var(--border);}
+.essay-pip.done{background:var(--cobalt);}
+
+/* ─── SCREENSHOT 2: ESSAY EDITOR ─── */
+.essay-layout{display:grid;grid-template-columns:1fr 300px;gap:0;height:360px;}
+.essay-editor-pane{padding:16px 20px;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:12px;overflow:hidden;}
+.essay-meta{display:flex;align-items:center;gap:10px;}
+.essay-prompt{font-size:12px;color:var(--text-3);line-height:1.55;background:var(--cream);border-radius:8px;padding:10px 12px;border-left:3px solid var(--cobalt);}
+.essay-body{font-size:13px;color:var(--text);line-height:1.75;flex:1;overflow:hidden;}
+.essay-body p{margin-bottom:10px;}
+.essay-body .cursor{display:inline-block;width:2px;height:14px;background:var(--cobalt);animation:blink 1s step-end infinite;vertical-align:text-bottom;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.essay-toolbar{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);}
+.essay-wc{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-3);}
+.essay-wc span{color:var(--cobalt);font-weight:700;}
+.ai-panel{background:var(--cream);display:flex;flex-direction:column;gap:0;overflow:hidden;}
+.ai-panel-head{padding:12px 14px;background:var(--navy-deep);display:flex;align-items:center;gap:8px;}
+.ai-panel-title{font-size:12px;font-weight:700;color:var(--cream);}
+.ai-msg{padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.06);font-size:12px;line-height:1.6;}
+.ai-msg.ai{color:var(--text-2);}
+.ai-msg-sender{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.ai-msg-sender.ai{color:var(--cobalt);}
+.ai-msg-sender.me{color:var(--text-3);}
+.ai-msg.me{background:rgba(59,130,212,.05);}
+.ai-suggestions{padding:10px 14px;display:flex;flex-direction:column;gap:6px;}
+.ai-chip{font-size:11px;color:var(--cobalt);background:var(--cobalt-lt);padding:5px 10px;border-radius:8px;cursor:pointer;}
+
+/* ─── SCREENSHOT 3: DEADLINE CALENDAR ─── */
+.cal-layout{display:grid;grid-template-columns:1fr 260px;gap:0;height:360px;}
+.cal-main{padding:16px;background:var(--white);overflow:hidden;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-title{font-size:14px;font-weight:700;color:var(--navy);}
+.cal-nav{display:flex;gap:6px;}
+.cal-nav-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-day-lbl{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);text-align:center;padding:4px 0;}
+.cal-day{height:42px;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4px 2px;position:relative;cursor:pointer;transition:background .1s;}
+.cal-day:hover{background:var(--cobalt-lt);}
+.cal-day-num{font-size:12px;font-weight:500;color:var(--text-2);}
+.cal-day.today .cal-day-num{background:var(--cobalt);color:var(--white);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cal-day.other .cal-day-num{color:var(--text-3);}
+.cal-event-dot{width:5px;height:5px;border-radius:50%;margin-top:2px;}
+.cal-events-panel{background:var(--cream);border-left:1px solid var(--border);padding:14px;overflow:hidden;}
+.cal-events-title{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;}
+.cal-event-item{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.cal-event-item.urgent{border-left:3px solid var(--red);}
+.cal-event-item.soon{border-left:3px solid var(--amber);}
+.cal-event-item.ok{border-left:3px solid var(--green);}
+.cel-school{font-size:13px;font-weight:700;color:var(--navy);}
+.cel-type{font-size:11px;color:var(--text-3);margin-top:1px;}
+.cel-date{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;margin-top:5px;}
+.cel-date.urgent{color:var(--red);}.cel-date.soon{color:var(--amber);}.cel-date.ok{color:var(--green);}
+
+/* ─── SCREENSHOT 4: MENTOR CHAT ─── */
+.mentor-layout{display:grid;grid-template-columns:240px 1fr;gap:0;height:360px;}
+.mentor-list{background:var(--white);border-right:1px solid var(--border);overflow:hidden;}
+.mentor-list-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--navy);}
+.mentor-chat-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+.mentor-chat-item.active{background:var(--cobalt-lt);}
+.mentor-chat-item:hover:not(.active){background:var(--cream);}
+.mci-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:2px solid var(--border);}
+.mci-name{font-size:12px;font-weight:700;color:var(--navy);}
+.mci-preview{font-size:11px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
+.mci-time{font-size:10px;color:var(--text-3);margin-left:auto;flex-shrink:0;}
+.chat-pane{display:flex;flex-direction:column;background:var(--cream);}
+.chat-header{background:var(--white);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.chat-hav{width:36px;height:36px;border-radius:50%;background:var(--cobalt-lt);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.chat-hname{font-size:13px;font-weight:700;color:var(--navy);}
+.chat-hrole{font-size:11px;color:var(--text-3);}
+.chat-msgs{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:10px;overflow:hidden;}
+.chat-msg{max-width:76%;padding:10px 13px;border-radius:12px;font-size:12px;line-height:1.6;}
+.chat-msg.them{background:var(--white);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start;}
+.chat-msg.me{background:var(--cobalt);color:var(--white);border-bottom-right-radius:4px;align-self:flex-end;}
+.chat-input-bar{background:var(--white);border-top:1px solid var(--border);padding:10px 14px;display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.chat-input{flex:1;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text-3);}
+.chat-send{background:var(--cobalt);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;}
+
+/* VALUE PROPS */
+#value{background:var(--white);}
+.vp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.vp-card{background:var(--cream);border:1px solid var(--border);border-radius:var(--r-xl);padding:36px 30px;transition:all .2s;}
+.vp-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(28,45,69,.09);border-color:var(--border-2);}
+.vp-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:20px;}
+.ic-co{background:var(--cobalt-lt);}.ic-go{background:var(--gold-lt);}.ic-na{background:rgba(28,45,69,.06);}.ic-gr{background:var(--green-lt);}.ic-pu{background:var(--purple-lt);}.ic-te{background:var(--teal-lt);}
+.vp-card h3{font-size:16px;font-weight:700;letter-spacing:-.2px;margin-bottom:9px;}
+.vp-card p{font-size:14px;color:var(--text-2);line-height:1.75;}
+
+/* HOW IT WORKS PREVIEW */
+#how{background:var(--navy);}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;position:relative;}
+.steps::before{content:'';position:absolute;top:50px;left:calc(16.66% + 18px);right:calc(16.66% + 18px);height:1px;background:linear-gradient(90deg,var(--cobalt),rgba(59,130,212,.15));}
+.step{padding:44px 34px;text-align:center;}
+.step-n{width:50px;height:50px;border-radius:50%;border:1.5px solid var(--cobalt);background:rgba(59,130,212,.1);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--cobalt);margin:0 auto 24px;position:relative;z-index:1;}
+.step h3{font-size:16px;font-weight:700;color:var(--cream);margin-bottom:10px;}
+.step p{font-size:14px;color:rgba(246,244,239,.44);line-height:1.7;}
+.how-cta{text-align:center;margin-top:52px;}
+.btn-how{font-size:14px;font-weight:600;padding:12px 28px;border-radius:var(--r-lg);background:rgba(59,130,212,.15);color:var(--cobalt);border:1px solid rgba(59,130,212,.3);text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .15s;}
+.btn-how:hover{background:rgba(59,130,212,.25);border-color:var(--cobalt);}
+
+/* MENTOR PREVIEWS */
+#mentors-preview{background:var(--cream);}
+.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.mp-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);padding:26px;transition:all .2s;}
+.mp-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(28,45,69,.08);}
+.mp-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.mp-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid var(--border);}
+.mp-name{font-size:14px;font-weight:700;}.mp-role{font-size:11px;color:var(--text-3);margin-top:1px;}
+.mp-quote{font-size:13px;color:var(--text-2);line-height:1.7;font-style:italic;margin-bottom:14px;}
+.view-all{text-align:center;margin-top:40px;}
+.btn-view{font-size:14px;font-weight:600;padding:12px 28px;border-radius:var(--r-lg);border:1.5px solid var(--border-2);background:transparent;color:var(--navy);text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .15s;}
+.btn-view:hover{border-color:var(--cobalt);color:var(--cobalt);}
+
+/* STATS STRIP */
+#stats{background:var(--cobalt);padding:0 52px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);max-width:1100px;margin:0 auto;}
+.stat-cell{padding:52px 32px;text-align:center;border-right:1px solid rgba(255,255,255,.12);}
+.stat-cell:last-child{border:none;}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:58px;font-weight:700;color:var(--white);line-height:1;letter-spacing:-2px;}
+.stat-l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:7px;}
+.stat-s{font-size:12px;color:rgba(255,255,255,.32);margin-top:4px;}
+
+/* PRICING PREVIEW */
+#pricing-preview{background:var(--white);}
+.pp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.pp-card{background:var(--cream);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:34px 30px;position:relative;transition:all .2s;}
+.pp-card:hover{transform:translateY(-4px);box-shadow:0 12px 38px rgba(28,45,69,.1);}
+.pp-card.pop{background:var(--navy);border-color:var(--cobalt);}
+.pop-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--cobalt);color:var(--white);padding:3px 14px;border-radius:20px;white-space:nowrap;}
+.plan-n{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;}
+.plan-n-i{color:rgba(246,244,239,.35);}
+.plan-p{font-family:'Cormorant Garamond',serif;font-size:50px;font-weight:700;letter-spacing:-1.5px;color:var(--navy);line-height:1;}
+.plan-p-i{color:var(--cream);}
+.plan-per{font-size:12px;color:var(--text-3);margin-top:4px;}
+.plan-per-i{color:rgba(246,244,239,.3);}
+.plan-d{font-size:13px;color:var(--text-2);line-height:1.65;margin:14px 0 22px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.plan-d-i{color:rgba(246,244,239,.48);border-color:rgba(255,255,255,.08);}
+.plan-ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px;}
+.plan-ul li{font-size:13px;color:var(--text-2);display:flex;align-items:flex-start;gap:7px;}
+.plan-ul li::before{content:'✓';color:var(--cobalt);font-weight:700;font-size:12px;margin-top:1px;flex-shrink:0;}
+.plan-ul li.i{color:rgba(246,244,239,.52);}
+.plan-ul li.i::before{color:rgba(59,130,212,.7);}
+.btn-plan{width:100%;font-size:14px;font-weight:700;padding:13px;border-radius:var(--r-lg);cursor:pointer;transition:all .2s;text-align:center;text-decoration:none;display:block;border:1.5px solid var(--border);background:transparent;color:var(--navy);}
+.btn-plan:hover{border-color:var(--cobalt);color:var(--cobalt);}
+.btn-plan-p{background:var(--cobalt);border-color:var(--cobalt);color:var(--white);}
+.btn-plan-p:hover{background:#2d6cbf;box-shadow:0 4px 18px rgba(59,130,212,.35);}
+
+/* TESTIMONIAL */
+#testi{background:var(--cream);}
+.testi-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.tc{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);padding:32px;transition:box-shadow .2s;}
+.tc:hover{box-shadow:0 8px 28px rgba(28,45,69,.07);}
+.tc.feat{background:var(--navy);border-color:var(--navy);grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.stars{display:flex;gap:3px;margin-bottom:14px;}
+.star{color:var(--gold);font-size:13px;}
+.tq{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;font-weight:600;line-height:1.5;color:var(--navy);margin-bottom:18px;}
+.tq-i{color:var(--cream);}
+.ta{display:flex;align-items:center;gap:11px;}
+.tav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;border:2px solid var(--border);background:var(--cobalt-lt);}
+.tav-i{background:rgba(59,130,212,.2);border-color:rgba(255,255,255,.15);}
+.tan{font-size:13px;font-weight:700;color:var(--navy);}
+.tan-i{color:var(--cream);}
+.tas{font-size:12px;color:var(--text-3);margin-top:1px;}
+.tas-i{color:rgba(246,244,239,.32);}
+.tr-divider{height:1px;background:rgba(255,255,255,.08);margin:18px 0;}
+.tr-lbl{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cobalt);margin-bottom:5px;}
+.tr-val{font-size:14px;font-weight:600;color:var(--cream);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">College<span class="dot">Ora</span></a>
+  <ul class="nav-links">
+    <li><a href="how-it-works.html">How it works</a></li>
+    <li><a href="mentors.html">Mentors</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="community.html">Community</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="btn-ghost" href="login.html">Log in</a>
+    <a class="btn-primary" href="community.html">Join waitlist →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div><div class="orb-1"></div><div class="orb-2"></div>
+  <div class="arc"></div><div class="arc2"></div>
+  <div class="hero-content wrap">
+    <div class="hero-eyebrow fade-up d1">Now enrolling · Class of 2029</div>
+    <h1 class="hero-h fade-up d2">Your US college<br>application,<br><em>finally organized.</em></h1>
+    <p class="hero-sub fade-up d3">One platform to track every school, essay, deadline, and rec letter — plus peer mentors from Harvard, MIT, Stanford and more who've done it all before.</p>
+    <div class="hero-btns fade-up d4">
+      <a class="btn-hero btn-hero-p" href="community.html">Join the waitlist →</a>
+      <a class="btn-hero btn-hero-g" href="how-it-works.html">See how it works</a>
+    </div>
+  </div>
+  <div class="hero-stats wrap fade-up d5">
+    <div><div class="hs-lbl">Students on waitlist</div><div class="hs-num">4,200+</div><div class="hs-sub">across 50 states</div></div>
+    <div><div class="hs-lbl">US Universities</div><div class="hs-num">240+</div><div class="hs-sub">T20s, LACs, state flagships</div></div>
+    <div><div class="hs-lbl">Peer mentors</div><div class="hs-num">340+</div><div class="hs-sub">from top-25 schools</div></div>
+    <div><div class="hs-lbl">Avg. aid negotiated</div><div class="hs-num">$18K</div><div class="hs-sub">above initial offer</div></div>
+  </div>
+</section>
+
+<!-- SCHOOL STRIP -->
+<section id="schools">
+  <div class="schools-strip">
+    <div class="schools-label">Our mentors attend & have attended</div>
+    <div class="schools-row">
+      <div class="school-pill">Harvard</div><div class="school-pill">MIT</div><div class="school-pill">Stanford</div><div class="school-pill">Yale</div><div class="school-pill">Princeton</div><div class="school-pill">Columbia</div><div class="school-pill">UChicago</div><div class="school-pill">Penn</div><div class="school-pill">Dartmouth</div><div class="school-pill">Brown</div><div class="school-pill">Cornell</div><div class="school-pill">Caltech</div><div class="school-pill">Duke</div><div class="school-pill">Northwestern</div><div class="school-pill">Johns Hopkins</div>
+    </div>
+  </div>
+</section>
+
+<!-- APP SCREENSHOTS -->
+<section id="screenshots">
+  <div class="wrap">
+    <div class="screenshots-header">
+      <div class="eyebrow" style="color:rgba(59,130,212,.8);justify-content:center">The Platform</div>
+      <h2>See exactly what you're<br><em>getting.</em></h2>
+      <p>Here's a real look at the CollegeOra platform — every screen you'll use from first login to final submission.</p>
+    </div>
+
+    <div class="phase-legend">
+      <div class="pl-item"><div class="pl-dot" style="background:var(--gold)"></div>Phase 1 · Live at launch</div>
+      <div class="pl-item"><div class="pl-dot" style="background:var(--cobalt)"></div>Phase 2 · 4 months post-launch</div>
+      <div class="pl-item"><div class="pl-dot" style="background:var(--purple)"></div>Phase 3 · 7 months post-launch</div>
+      <div class="pl-item"><div class="pl-dot" style="background:var(--green)"></div>Phase 4 · Post-funding</div>
+    </div>
+
+    <div class="screen-tabs">
+      <button class="screen-tab tab-p1 active" onclick="showScreen('essay',this)">
+        <span class="tab-phase">Phase 1</span><span class="tab-icon">✍️</span><span class="tab-name">AI Essay Engine</span>
+      </button>
+      <button class="screen-tab" onclick="showScreen('dashboard',this)">
+        <span class="tab-phase">Phase 2</span><span class="tab-icon">📊</span><span class="tab-name">You Page</span>
+      </button>
+      <button class="screen-tab" onclick="showScreen('deadlines',this)">
+        <span class="tab-phase">Phase 2</span><span class="tab-icon">🗓️</span><span class="tab-name">Deadline Engine</span>
+      </button>
+      <button class="screen-tab" onclick="showScreen('score',this)">
+        <span class="tab-phase">Phase 2</span><span class="tab-icon">🏆</span><span class="tab-name">UNiQUaD Score</span>
+      </button>
+      <button class="screen-tab tab-p3a" onclick="showScreen('matching',this)">
+        <span class="tab-phase">Phase 3</span><span class="tab-icon">🔍</span><span class="tab-name">College Matching</span>
+      </button>
+      <button class="screen-tab tab-p3b" onclick="showScreen('community',this)">
+        <span class="tab-phase">Phase 3</span><span class="tab-icon">💬</span><span class="tab-name">Community</span>
+      </button>
+      <button class="screen-tab tab-p4" onclick="showScreen('mentor',this)">
+        <span class="tab-phase">Phase 4</span><span class="tab-icon">👥</span><span class="tab-name">Peer Mentors</span>
+      </button>
+    </div>
+
+    <!-- SCREEN 1: AI ESSAY ENGINE (Phase 1) -->
+    <div class="screen-panel active" id="screen-essay">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+          <div class="browser-url">app.collegeora.com/essays/mit-personal-statement</div>
+        </div>
+        <div class="app-shell">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">College<span style="color:var(--cobalt)">Ora</span></div>
+            <div class="app-nav-section">Essays</div>
+            <div class="app-nav-item active"><span class="app-nav-icon">✍️</span>My Essays</div>
+            <div class="app-nav-item"><span class="app-nav-icon">📋</span>Prompt Library</div>
+            <div class="app-nav-item"><span class="app-nav-icon">📈</span>Progress</div>
+            <div class="app-nav-section">Account</div>
+            <div class="app-nav-item"><span class="app-nav-icon">💎</span>Upgrade Plan</div>
+            <div class="app-nav-item"><span class="app-nav-icon">⚙️</span>Settings</div>
+          </div>
+          <div class="app-main">
+            <div class="app-topbar">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="badge" style="background:var(--gold-lt);color:var(--gold)">Common App</span>
+                <div class="app-topbar-title">Personal Statement — Draft 3</div>
+              </div>
+              <div style="display:flex;gap:7px">
+                <span class="badge badge-am">Draft 3 of 3</span>
+                <button style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:7px;background:var(--cobalt);color:white;border:none;cursor:pointer">Run Analysis →</button>
+              </div>
+            </div>
+            <div class="essay-layout">
+              <div class="essay-editor-pane">
+                <div class="essay-prompt">📋 <strong>Prompt 7 (Topic of Your Choice):</strong> Share an essay on any topic of your choice. 650 words max.</div>
+                <div style="display:flex;gap:6px;margin-bottom:4px">
+                  <span class="badge badge-co">Structure: 78</span>
+                  <span class="badge badge-gr">Hook: Strong</span>
+                  <span class="badge badge-am">Specificity: Work needed</span>
+                  <span class="badge badge-gr">Authentic: ✓</span>
+                </div>
+                <div class="essay-body">
+                  <p>Every Tuesday at 6 AM, I unlock the robotics lab before my teammates arrive. Not because I have to — because the hour before the chaos is where I do my best thinking. I redesign the arm's wrist joint in my head while the building is still dark.</p>
+                  <p>Leading the programming sub-team for FRC Team 1912 taught me that technical problems and people problems are fundamentally the same problem. When our autonomous routine kept failing at competition, I had to simultaneously debug the code, manage a panicking team, and communicate our status to coaches expecting results.<span class="cursor"></span></p>
+                </div>
+                <div class="essay-toolbar">
+                  <div class="essay-wc">Words: <span>602</span> / 650 &nbsp;·&nbsp; <span style="color:var(--green)">✓ Under limit</span></div>
+                  <span style="font-size:11px;color:var(--text-3)">Auto-saved 1m ago</span>
+                </div>
+              </div>
+              <div class="ai-panel">
+                <div class="ai-panel-head" style="flex-direction:column;gap:0;padding:10px 12px">
+                  <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px"><span>🤖</span><div class="ai-panel-title">AI Analysis Results</div></div>
+                  <div style="display:flex;gap:4px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:8px">
+                    <button style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;background:var(--cobalt);color:white;border:none;cursor:pointer">Structure</button>
+                    <button style="font-size:10px;padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.07);color:rgba(246,244,239,.5);border:none;cursor:pointer">Hook</button>
+                    <button style="font-size:10px;padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.07);color:rgba(246,244,239,.5);border:none;cursor:pointer">Clarity</button>
+                    <button style="font-size:10px;padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.07);color:rgba(246,244,239,.5);border:none;cursor:pointer">Grammar</button>
+                  </div>
+                </div>
+                <div class="ai-msg ai">
+                  <div class="ai-msg-sender ai">Structure Score · 78/100</div>
+                  Clear narrative arc with a strong opening image. The "6 AM" detail is doing real work. Your closing needs to pull back to the insight you set up at the start — right now it ends on action, not meaning.
+                </div>
+                <div class="ai-msg ai" style="background:rgba(201,137,58,.07);border-left:3px solid var(--gold)">
+                  <div class="ai-msg-sender" style="color:var(--gold)">Specificity Flag</div>
+                  "I had to simultaneously debug..." — this is your most important sentence. Make it specific: what exactly was failing? Name the sensor or the line of code.
+                </div>
+                <div class="ai-suggestions">
+                  <div class="ai-chip">💡 Try: name the specific failure</div>
+                  <div class="ai-chip">💡 Move closing insight forward</div>
+                  <div class="ai-chip">✓ Opening hook: keep as-is</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption"><strong>Phase 1 · Launching first — the revenue wedge.</strong> Upload any essay, get detailed AI feedback in 30 seconds: structure score, hook rating, specificity flags, grammar top-5. 2 free analyses/month; unlimited on paid plans.</div>
+    </div>
+
+    <!-- SCREEN 2: YOU PAGE (Phase 2) -->
+    <div class="screen-panel" id="screen-dashboard">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+          <div class="browser-url">app.collegeora.com/you</div>
+        </div>
+        <div class="app-shell">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">College<span style="color:var(--cobalt)">Ora</span></div>
+            <div class="app-nav-section">Main</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🏠</span>Home</div>
+            <div class="app-nav-item active"><span class="app-nav-icon">📊</span>You Page</div>
+            <div class="app-nav-item"><span class="app-nav-icon">✍️</span>Essays</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🗓️</span>Deadlines</div>
+            <div class="app-nav-section">Profile</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🏆</span>My Score</div>
+            <div class="app-nav-item"><span class="app-nav-icon">👥</span>Mentors</div>
+          </div>
+          <div class="app-main">
+            <div class="app-topbar">
+              <div class="app-topbar-title">You Page — Application Command Center</div>
+              <div style="display:flex;gap:7px;align-items:center">
+                <button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;border:1.5px solid var(--border);background:transparent;color:var(--navy);cursor:pointer">+ Add School</button>
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--cobalt);display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700">AK</div>
+              </div>
+            </div>
+            <div class="app-content">
+              <div style="display:flex;gap:8px;margin-bottom:10px">
+                <div style="flex:1;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px">
+                  <svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="26" cy="26" r="20" fill="none" stroke="var(--cobalt)" stroke-width="5" stroke-dasharray="125.7" stroke-dashoffset="37.7" stroke-linecap="round" transform="rotate(-90 26 26)"/><text x="50%" y="55%" text-anchor="middle" font-family="Cormorant Garamond" font-size="13" font-weight="700" fill="var(--navy)">70%</text></svg>
+                  <div><div style="font-size:13px;font-weight:700;color:var(--navy)">Overall Progress</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">8 of 11 apps started</div></div>
+                </div>
+                <div style="flex:1;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px">
+                  <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Next Deadline</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--red)">MIT EA · Nov 1</div>
+                  <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--amber);margin-top:2px">14 days away ⚡</div>
+                </div>
+                <div style="flex:1;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px">
+                  <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Essays</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--navy)">9 / 18 complete</div>
+                  <div style="height:5px;background:var(--border);border-radius:3px;margin-top:6px"><div style="width:50%;height:100%;background:var(--cobalt);border-radius:3px"></div></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:7px;margin-bottom:10px">
+                <button style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;border:none;background:var(--navy);color:var(--cream);cursor:pointer">All (11)</button>
+                <button style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer">Reach (4)</button>
+                <button style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer">Target (4)</button>
+                <button style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer">Safety (3)</button>
+              </div>
+              <div class="app-table">
+                <div class="app-table-head"><div>School</div><div>Round</div><div>Deadline</div><div>Essays</div></div>
+                <div class="app-table-row"><div><div class="school-name">MIT</div><div class="school-type">Reach · Engineering</div></div><div><span class="deadline-chip dc-red">EA</span></div><div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--red)">Nov 1</div><div class="essay-progress"><div class="essay-pip done"></div><div class="essay-pip done"></div><div class="essay-pip"></div><div class="essay-pip"></div><span style="font-size:11px;color:var(--text-3);margin-left:3px">2/4</span></div></div>
+                <div class="app-table-row"><div><div class="school-name">Harvard</div><div class="school-type">Reach · Gov't</div></div><div><span class="deadline-chip dc-red">REA</span></div><div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--red)">Nov 1</div><div class="essay-progress"><div class="essay-pip done"></div><div class="essay-pip"></div><div class="essay-pip"></div><span style="font-size:11px;color:var(--text-3);margin-left:3px">1/3</span></div></div>
+                <div class="app-table-row"><div><div class="school-name">UChicago</div><div class="school-type">Reach · Economics</div></div><div><span class="deadline-chip dc-am">EA</span></div><div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--amber)">Oct 28</div><div class="essay-progress"><div class="essay-pip done"></div><div class="essay-pip done"></div><div class="essay-pip done"></div><span style="font-size:11px;color:var(--green);margin-left:3px">✓</span></div></div>
+                <div class="app-table-row"><div><div class="school-name">Georgetown</div><div class="school-type">Target · Int'l Relations</div></div><div><span class="deadline-chip dc-gr">RD</span></div><div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--green)">Jan 10</div><div class="essay-progress"><div class="essay-pip done"></div><div class="essay-pip"></div><span style="font-size:11px;color:var(--text-3);margin-left:3px">1/2</span></div></div>
+                <div class="app-table-row"><div><div class="school-name">Univ. of Michigan</div><div class="school-type">Target · Business</div></div><div><span class="deadline-chip dc-gr">RD</span></div><div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--green)">Feb 1</div><div class="essay-progress"><div class="essay-pip"></div><div class="essay-pip"></div><span style="font-size:11px;color:var(--text-3);margin-left:3px">0/2</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption"><strong>Phase 2 · Your application command center.</strong> Every school, essay, deadline, and component tracked in one place. Free for up to 5 schools — unlimited on Standard. This is the platform's stickiness engine.</div>
+    </div>
+
+    <!-- SCREEN 3: DEADLINE ENGINE (Phase 2) -->
+    <div class="screen-panel" id="screen-deadlines">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+          <div class="browser-url">app.collegeora.com/deadlines</div>
+        </div>
+        <div class="app-shell">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">College<span style="color:var(--cobalt)">Ora</span></div>
+            <div class="app-nav-section">Main</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🏠</span>Home</div>
+            <div class="app-nav-item"><span class="app-nav-icon">📊</span>You Page</div>
+            <div class="app-nav-item"><span class="app-nav-icon">✍️</span>Essays</div>
+            <div class="app-nav-item active"><span class="app-nav-icon">🗓️</span>Deadlines</div>
+          </div>
+          <div class="app-main">
+            <div class="app-topbar">
+              <div class="app-topbar-title">Deadline Engine</div>
+              <div style="display:flex;gap:7px"><span class="badge badge-re">3 urgent</span><span class="badge badge-am">2 soon</span><span class="badge badge-gr">6 on track</span></div>
+            </div>
+            <div class="cal-layout">
+              <div class="cal-main">
+                <div class="cal-header">
+                  <div class="cal-title">October 2025</div>
+                  <div style="display:flex;gap:4px">
+                    <button style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;background:var(--navy);color:var(--cream);border:none;cursor:pointer">Month</button>
+                    <button style="font-size:11px;padding:4px 10px;border-radius:7px;background:transparent;color:var(--text-3);border:1px solid var(--border);cursor:pointer">Timeline</button>
+                  </div>
+                </div>
+                <div class="cal-grid">
+                  <div class="cal-day-lbl">S</div><div class="cal-day-lbl">M</div><div class="cal-day-lbl">T</div><div class="cal-day-lbl">W</div><div class="cal-day-lbl">T</div><div class="cal-day-lbl">F</div><div class="cal-day-lbl">S</div>
+                  <div class="cal-day other"><div class="cal-day-num">28</div></div><div class="cal-day other"><div class="cal-day-num">29</div></div><div class="cal-day other"><div class="cal-day-num">30</div></div><div class="cal-day"><div class="cal-day-num">1</div></div><div class="cal-day"><div class="cal-day-num">2</div></div><div class="cal-day"><div class="cal-day-num">3</div></div><div class="cal-day"><div class="cal-day-num">4</div></div>
+                  <div class="cal-day"><div class="cal-day-num">5</div></div><div class="cal-day"><div class="cal-day-num">6</div></div><div class="cal-day"><div class="cal-day-num">7</div></div><div class="cal-day"><div class="cal-day-num">8</div></div><div class="cal-day"><div class="cal-day-num">9</div></div><div class="cal-day"><div class="cal-day-num">10</div></div><div class="cal-day"><div class="cal-day-num">11</div></div>
+                  <div class="cal-day"><div class="cal-day-num">12</div></div><div class="cal-day"><div class="cal-day-num">13</div></div><div class="cal-day"><div class="cal-day-num">14</div></div><div class="cal-day"><div class="cal-day-num">15</div></div><div class="cal-day"><div class="cal-day-num">16</div></div><div class="cal-day today"><div class="cal-day-num">17</div></div><div class="cal-day"><div class="cal-day-num">18</div></div>
+                  <div class="cal-day"><div class="cal-day-num">19</div></div><div class="cal-day"><div class="cal-day-num">20</div></div><div class="cal-day"><div class="cal-day-num">21</div></div><div class="cal-day"><div class="cal-day-num">22</div></div><div class="cal-day"><div class="cal-day-num">23</div></div><div class="cal-day"><div class="cal-day-num">24</div></div><div class="cal-day"><div class="cal-day-num">25</div></div>
+                  <div class="cal-day"><div class="cal-day-num">26</div></div><div class="cal-day"><div class="cal-day-num">27</div></div><div class="cal-day"><div class="cal-day-num" style="color:var(--amber);font-weight:700">28</div><div class="cal-event-dot" style="background:var(--amber)"></div></div><div class="cal-day"><div class="cal-day-num">29</div></div><div class="cal-day"><div class="cal-day-num">30</div></div><div class="cal-day"><div class="cal-day-num" style="color:var(--red);font-weight:700">31</div></div><div class="cal-day other"><div class="cal-day-num" style="color:var(--red);font-weight:700">1</div><div class="cal-event-dot" style="background:var(--red)"></div></div>
+                </div>
+                <div style="margin-top:10px;padding:10px 12px;background:var(--cobalt-lt);border-radius:9px;font-size:12px;color:var(--cobalt)">
+                  📬 <strong>Smart alert:</strong> "Your MIT EA essays are due in 14 days. You haven't started Supplement 2 yet."
+                </div>
+              </div>
+              <div class="cal-events-panel">
+                <div class="cal-events-title">Upcoming</div>
+                <div class="cal-event-item urgent"><div class="cel-school">UChicago</div><div class="cel-type">Early Action · All essays</div><div class="cel-date urgent">Oct 28 — 11 days ⚠️</div></div>
+                <div class="cal-event-item urgent"><div class="cel-school">MIT</div><div class="cel-type">Early Action</div><div class="cel-date urgent">Nov 1 — 14 days ⚠️</div></div>
+                <div class="cal-event-item urgent"><div class="cel-school">Harvard</div><div class="cel-type">Restrictive EA</div><div class="cel-date urgent">Nov 1 — 14 days ⚠️</div></div>
+                <div class="cal-event-item soon"><div class="cel-school">Georgetown</div><div class="cel-type">Regular Decision</div><div class="cel-date soon">Jan 10 — 85 days</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption"><strong>Phase 2 · Context-aware deadline alerts.</strong> Reminders fire at 30, 14, 7, and 1 day before each deadline — with context ("you haven't started this essay yet"). Free: 7-day alert only. Standard: full schedule.</div>
+    </div>
+
+    <!-- SCREEN 4: UNIQUAD SCORE (Phase 2) -->
+    <div class="screen-panel" id="screen-score">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+          <div class="browser-url">app.collegeora.com/score</div>
+        </div>
+        <div class="app-shell">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">College<span style="color:var(--cobalt)">Ora</span></div>
+            <div class="app-nav-section">Main</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🏠</span>Home</div>
+            <div class="app-nav-item"><span class="app-nav-icon">📊</span>You Page</div>
+            <div class="app-nav-item"><span class="app-nav-icon">✍️</span>Essays</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🗓️</span>Deadlines</div>
+            <div class="app-nav-item active"><span class="app-nav-icon">🏆</span>UNiQUaD Score</div>
+          </div>
+          <div class="app-main">
+            <div class="app-topbar"><div class="app-topbar-title">Your UNiQUaD Score</div><span class="badge badge-co">Updated today</span></div>
+            <div class="app-content">
+              <div style="background:var(--navy);border-radius:14px;padding:22px;display:flex;align-items:center;gap:22px;margin-bottom:10px">
+                <div style="text-align:center;flex-shrink:0">
+                  <svg width="86" height="86" viewBox="0 0 86 86">
+                    <circle cx="43" cy="43" r="34" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="6"/>
+                    <circle cx="43" cy="43" r="34" fill="none" stroke="var(--cobalt)" stroke-width="6" stroke-dasharray="213.6" stroke-dashoffset="53.4" stroke-linecap="round" transform="rotate(-90 43 43)"/>
+                    <text x="50%" y="47%" text-anchor="middle" font-family="Cormorant Garamond" font-size="20" font-weight="700" fill="white">74</text>
+                    <text x="50%" y="63%" text-anchor="middle" font-family="Space Mono" font-size="7" fill="rgba(246,244,239,.4)">/100</text>
+                  </svg>
+                  <div style="font-family:'Space Mono',monospace;font-size:8px;font-weight:700;color:rgba(246,244,239,.35);margin-top:4px;letter-spacing:1px;text-transform:uppercase">READINESS</div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--cream);letter-spacing:-.5px;margin-bottom:4px">Strong progress, Alex.</div>
+                  <div style="font-size:12px;color:rgba(246,244,239,.45);line-height:1.6;margin-bottom:10px">You're ahead of 68% of students at this point in the cycle. 3 urgent items need attention before your Nov 1 deadlines.</div>
+                  <div style="display:flex;gap:6px">
+                    <span class="badge" style="background:rgba(59,130,212,.2);color:var(--cobalt)">+4 pts this week</span>
+                    <span class="badge badge-am">3 items need action</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+                  <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">Completion Score · 60% weight</div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;color:var(--text-2)">Essays written</span><span style="font-size:12px;font-weight:700;color:var(--cobalt)">9 / 18</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;color:var(--text-2)">Rec letters sent</span><span style="font-size:12px;font-weight:700;color:var(--green)">3/3 ✓</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;color:var(--text-2)">Test scores sent</span><span style="font-size:12px;font-weight:700;color:var(--amber)">2 / 5</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--text-2)">Apps submitted</span><span style="font-size:12px;font-weight:700;color:var(--red)">1 / 11</span></div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+                  <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">Academic Fit · 40% weight</div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;color:var(--text-2)">MIT</span><span class="badge badge-am">Stretch</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;color:var(--text-2)">Georgetown</span><span class="badge badge-gr">Good fit</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;color:var(--text-2)">Univ. of Michigan</span><span class="badge badge-gr">Strong</span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--text-2)">Harvard</span><span class="badge badge-re">Reach</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption"><strong>Phase 2 · Readiness in one shareable number.</strong> Combines completion across all apps (60%) and academic fit for each school (40%). Designed to be screenshotted and shared — drives organic growth.</div>
+    </div>
+
+    <!-- SCREEN 5: COLLEGE MATCHING (Phase 3) -->
+    <div class="screen-panel" id="screen-matching">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+          <div class="browser-url">app.collegeora.com/match</div>
+        </div>
+        <div class="app-shell">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">College<span style="color:var(--cobalt)">Ora</span></div>
+            <div class="app-nav-section">Main</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🏠</span>Home</div>
+            <div class="app-nav-item"><span class="app-nav-icon">📊</span>You Page</div>
+            <div class="app-nav-item"><span class="app-nav-icon">✍️</span>Essays</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🗓️</span>Deadlines</div>
+            <div class="app-nav-item active"><span class="app-nav-icon">🔍</span>College Match</div>
+          </div>
+          <div class="app-main">
+            <div class="app-topbar"><div class="app-topbar-title">AI College Matching</div><span class="badge badge-pu">240+ US Schools</span></div>
+            <div class="app-content">
+              <div style="background:var(--purple-lt);border:1px solid rgba(108,79,212,.2);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--purple);display:flex;align-items:center;gap:8px">
+                🤖 Based on your 3.92 GPA, 1530 SAT, CS interest, and need-aware preference — here's your best-fit list.
+              </div>
+              <div style="display:flex;gap:8px;margin-bottom:10px">
+                <div style="flex:1">
+                  <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:6px">Reach (4)</div>
+                  <div class="cm-card"><div class="cm-logo">🎓</div><div style="flex:1"><div style="font-size:12px;font-weight:700">MIT</div><div style="font-size:10px;color:var(--text-3)">3.96 · 1570 SAT median</div><div style="margin-top:4px"><div class="cm-match-bar"><div class="cm-match-fill" style="width:65%;background:var(--red)"></div></div></div></div><span class="badge badge-re">65%</span></div>
+                  <div class="cm-card"><div class="cm-logo">🏛️</div><div style="flex:1"><div style="font-size:12px;font-weight:700">Harvard</div><div style="font-size:10px;color:var(--text-3)">3.95 · 1560 SAT median</div><div style="margin-top:4px"><div class="cm-match-bar"><div class="cm-match-fill" style="width:58%;background:var(--red)"></div></div></div></div><span class="badge badge-re">58%</span></div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:6px">Target (4)</div>
+                  <div class="cm-card"><div class="cm-logo">🦁</div><div style="flex:1"><div style="font-size:12px;font-weight:700">Georgetown</div><div style="font-size:10px;color:var(--text-3)">3.88 · 1500 SAT median</div><div style="margin-top:4px"><div class="cm-match-bar"><div class="cm-match-fill" style="width:82%;background:var(--amber)"></div></div></div></div><span class="badge badge-am">82%</span></div>
+                  <div class="cm-card"><div class="cm-logo">⭐</div><div style="flex:1"><div style="font-size:12px;font-weight:700">Vanderbilt</div><div style="font-size:10px;color:var(--text-3)">3.90 · 1510 SAT median</div><div style="margin-top:4px"><div class="cm-match-bar"><div class="cm-match-fill" style="width:79%;background:var(--amber)"></div></div></div></div><span class="badge badge-am">79%</span></div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:6px">Safety (3)</div>
+                  <div class="cm-card"><div class="cm-logo">🐻</div><div style="flex:1"><div style="font-size:12px;font-weight:700">UC Davis</div><div style="font-size:10px;color:var(--text-3)">3.75 · 1400 SAT median</div><div style="margin-top:4px"><div class="cm-match-bar"><div class="cm-match-fill" style="width:94%;background:var(--green)"></div></div></div></div><span class="badge badge-gr">94%</span></div>
+                  <div class="cm-card" style="opacity:.65"><div class="cm-logo">🏫</div><div style="flex:1"><div style="font-size:12px;font-weight:700">+2 more matches</div><div style="font-size:10px;color:var(--text-3)">Strong safety schools</div></div></div>
+                </div>
+              </div>
+              <button style="width:100%;font-size:12px;font-weight:600;padding:9px;border-radius:9px;border:1.5px solid var(--purple);color:var(--purple);background:var(--purple-lt);cursor:pointer">Add all to You Page →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption"><strong>Phase 3 · AI-powered college list building.</strong> Enter GPA, SAT, major, and aid preferences. CollegeOra builds a balanced reach/target/safety list from 240+ US schools with a fit score for each. Add to your tracker in one click.</div>
+    </div>
+
+    <!-- SCREEN 6: COMMUNITY FORUMS (Phase 3) -->
+    <div class="screen-panel" id="screen-community">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+          <div class="browser-url">app.collegeora.com/community</div>
+        </div>
+        <div class="app-shell">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">College<span style="color:var(--cobalt)">Ora</span></div>
+            <div class="app-nav-section">Community</div>
+            <div class="app-nav-item active"><span class="app-nav-icon">💬</span>Forums</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🔥</span>Trending</div>
+            <div class="app-nav-item"><span class="app-nav-icon">📌</span>Saved posts</div>
+            <div class="app-nav-section">Channels</div>
+            <div class="app-nav-item"><span class="app-nav-icon">✍️</span>Essay Help</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🎓</span>School-Specific</div>
+            <div class="app-nav-item"><span class="app-nav-icon">💰</span>Financial Aid</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🏆</span>Results & Wins</div>
+          </div>
+          <div class="app-main">
+            <div class="app-topbar">
+              <div class="app-topbar-title">Community Forums</div>
+              <div style="display:flex;gap:7px;align-items:center">
+                <span style="font-size:11px;color:var(--text-3)">4,218 students active</span>
+                <button style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:7px;background:var(--cobalt);color:white;border:none;cursor:pointer">+ Post</button>
+              </div>
+            </div>
+            <div class="app-content">
+              <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+                <button style="font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;background:var(--navy);color:var(--cream);border:none;cursor:pointer">All</button>
+                <button style="font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer">Essays</button>
+                <button style="font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer">Deadlines</button>
+                <button style="font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer">Financial Aid</button>
+                <button style="font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer">Wins 🎉</button>
+              </div>
+              <div class="forum-post">
+                <div style="display:flex;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:#DBE9FA;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">🎓</div><div style="flex:1"><div class="fp-title">Has anyone found a good angle for the MIT "Why MIT" supplement?</div><div class="fp-preview">I keep starting with "MIT's collaborative culture" but my mentor says it's too generic. Told me to pick a specific lab or class — has anyone done this?</div><div class="fp-meta"><span class="fp-m">Riley M. · 3h ago</span><span class="fp-m">💬 14 replies</span><span class="fp-m">❤️ 31</span><span class="badge badge-co" style="font-size:9px;padding:2px 7px">Essays</span></div></div></div>
+              </div>
+              <div class="forum-post" style="border-left:3px solid var(--gold)">
+                <div style="display:flex;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:#EDE8FA;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">📐</div><div style="flex:1"><div class="fp-title">📌 Mentor tip: Harvard REA is November 1. Here's what to finalize this week.</div><div class="fp-preview">If you're applying REA: (1) personal statement must be 100% final, (2) "Why Harvard" is your most important supplement — don't rush it in the last 48 hours...</div><div class="fp-meta"><span class="fp-m">Karan S. · Mentor · 1d ago</span><span class="fp-m">💬 9 replies</span><span class="fp-m">❤️ 78</span><span class="badge badge-go" style="font-size:9px;padding:2px 7px">Mentor tip</span></div></div></div>
+              </div>
+              <div class="forum-post">
+                <div style="display:flex;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:#D1FAE5;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">🏆</div><div style="flex:1"><div class="fp-title">JUST SUBMITTED CORNELL EA!! 🎉🎉 The deadline tracker saved me.</div><div class="fp-preview">5 drafts of the "Why Cornell Engineering" supplement over 6 weeks. The tracker saved me from missing the portal confirmation step — I had no idea that was separate...</div><div class="fp-meta"><span class="fp-m">Marcus T. · today</span><span class="fp-m">💬 47 replies</span><span class="fp-m">❤️ 134</span><span class="badge badge-gr" style="font-size:9px;padding:2px 7px">Win 🎉</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption"><strong>Phase 3 · Community forums with school-specific channels.</strong> Essay help, deadline Q&A, financial aid discussion, and a wins feed that drives organic sharing. Mentor-pinned tips rank prominently.</div>
+    </div>
+
+    <!-- SCREEN 7: PEER MENTORS (Phase 4) -->
+    <div class="screen-panel" id="screen-mentor">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+          <div class="browser-url">app.collegeora.com/mentors/chat</div>
+        </div>
+        <div class="app-shell">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">College<span style="color:var(--cobalt)">Ora</span></div>
+            <div class="app-nav-section">Main</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🏠</span>Home</div>
+            <div class="app-nav-item"><span class="app-nav-icon">📊</span>You Page</div>
+            <div class="app-nav-item"><span class="app-nav-icon">✍️</span>Essays</div>
+            <div class="app-nav-item"><span class="app-nav-icon">🗓️</span>Deadlines</div>
+            <div class="app-nav-section">Support</div>
+            <div class="app-nav-item active"><span class="app-nav-icon">👥</span>My Mentor</div>
+            <div class="app-nav-item"><span class="app-nav-icon">💬</span>Community</div>
+          </div>
+          <div class="app-main">
+            <div class="app-topbar"><div class="app-topbar-title">Mentor Conversations</div><span class="badge badge-co">Priya M. — MIT '27</span></div>
+            <div style="display:flex;height:360px;">
+              <div class="mentor-list">
+                <div class="mentor-list-head">Messages</div>
+                <div class="mentor-chat-item active"><div class="mci-av" style="background:#DBE9FA">🎓</div><div style="flex:1;overflow:hidden"><div class="mci-name">Priya M.</div><div class="mci-preview">Great start on the MIT essay...</div></div><div class="mci-time">2m</div></div>
+                <div class="mentor-chat-item"><div class="mci-av" style="background:#EDE8FA">📐</div><div style="flex:1;overflow:hidden"><div class="mci-name">Karan S.</div><div class="mci-preview">The Harvard supplement needs...</div></div><div class="mci-time">1h</div></div>
+                <div class="mentor-chat-item"><div class="mci-av" style="background:#D1FAE5">🤖</div><div style="flex:1;overflow:hidden"><div class="mci-name">AI Assistant</div><div class="mci-preview">Your activity list analysis...</div></div><div class="mci-time">3h</div></div>
+              </div>
+              <div class="chat-pane">
+                <div class="chat-header">
+                  <div class="chat-hav">🎓</div>
+                  <div><div class="chat-hname">Priya M.</div><div class="chat-hrole">MIT '27 · Computer Science · Online now</div></div>
+                  <span class="badge badge-go" style="margin-left:auto">Top Mentor</span>
+                </div>
+                <div class="chat-msgs">
+                  <div class="chat-msg them">Hey! I just read your robotics essay. The 6 AM detail is perfect — really specific and visual. MIT readers love that kind of concrete image.</div>
+                  <div class="chat-msg me">Thanks! Should I cut the part about managing the team or keep it?</div>
+                  <div class="chat-msg them">Keep it — but restructure so the "people problem = technical problem" insight comes at the end. That's your strongest line and right now it's buried in the middle.</div>
+                  <div class="chat-msg me">That makes sense. What about the word count? I'm at 147/150.</div>
+                  <div class="chat-msg them">You're good! Don't pad. 147 is better than 150 with filler. Send me draft 4 when you restructure. 👍</div>
+                </div>
+                <div class="chat-input-bar">
+                  <div class="chat-input">Reply to Priya...</div>
+                  <button class="chat-send">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-caption"><strong>Phase 4 · Full P2P mentor marketplace.</strong> Matched by school list, major, and background. Async messaging with essay sharing built in. Weekly 1-on-1 calls on Scholar plan. Mentors earn $30–60/session.</div>
+    </div>
+
+
+<section id="value">
+  <div class="wrap">
+    <div class="eyebrow">Why CollegeOra</div>
+    <h2 class="section-title">Everything a top counselor<br>gives you — at a fraction.</h2>
+    <p class="section-desc">Private college counselors charge $150–300/hour. CollegeOra gives you better tools and mentors who actually went to your target schools, starting at $29/month.</p>
+    <div class="vp-grid">
+      <div class="vp-card"><div class="vp-icon ic-co">💰</div><h3>10x More Affordable</h3><p>Private counselors average $3,000–8,000 total. CollegeOra's full platform starts at $29/month — less than one hour of traditional consulting.</p></div>
+      <div class="vp-card"><div class="vp-icon ic-go">🎓</div><h3>Mentors Who Actually Got In</h3><p>Connect with current Harvard, MIT, Stanford, and Yale students who navigated the exact same Common App, Coalition, and school-specific portals you're using.</p></div>
+      <div class="vp-card"><div class="vp-icon ic-na">🤖</div><h3>AI Built for College Apps</h3><p>Not just ChatGPT. Our AI is trained specifically on the Common App, supplement prompts, and what US admissions officers look for in 2025–26.</p></div>
+      <div class="vp-card"><div class="vp-icon ic-gr">📋</div><h3>All 240+ Schools, One Dashboard</h3><p>T20s, LACs, and state flagships — all pre-loaded with deadlines, essay requirements, and supplement details. Updated in real time when schools change prompts.</p></div>
+      <div class="vp-card"><div class="vp-icon ic-pu">📬</div><h3>Never Miss a Deadline</h3><p>Smart alerts fire at 2 weeks, 7 days, 48 hours, and the morning of every deadline. Syncs to your phone calendar automatically.</p></div>
+      <div class="vp-card"><div class="vp-icon ic-te">💵</div><h3>Financial Aid Strategy</h3><p>Understand need-blind vs. need-aware policies, learn to compare aid packages, and get help negotiating offers — a process most students navigate completely alone.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS PREVIEW -->
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow" style="color:rgba(59,130,212,.8)">Process</div>
+    <h2 class="section-title" style="color:var(--cream)">Three steps from signup<br>to submitted.</h2>
+    <p class="section-desc" style="color:rgba(246,244,239,.42)">No guesswork. No overwhelm. A guided process built around how successful applicants actually work.</p>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><h3>Build your profile & list</h3><p>Tell us your GPA, test scores, intended major, and reach/target/safety preferences. We build a personalized college list and match you to a mentor.</p></div>
+      <div class="step"><div class="step-n">02</div><h3>Write, track, get feedback</h3><p>Use the essay editor and deadline tracker for every school. Your mentor reviews drafts and the AI gives structural feedback in real time.</p></div>
+      <div class="step"><div class="step-n">03</div><h3>Submit, compare, decide</h3><p>Track decisions, compare financial aid offers, and get help negotiating. CollegeOra stays with you until you hit confirm enrollment.</p></div>
+    </div>
+    <div class="how-cta"><a class="btn-how" href="how-it-works.html">See the full 12-step journey →</a></div>
+  </div>
+</section>
+
+<!-- MENTORS PREVIEW -->
+<section id="mentors-preview">
+  <div class="wrap">
+    <div class="eyebrow">Peer Network</div>
+    <h2 class="section-title">Mentors from your<br>dream schools.</h2>
+    <p class="section-desc">Every mentor is a verified current student or recent grad — vetted, trained, and matched to you based on school, major, and background.</p>
+    <div class="mp-grid">
+      <div class="mp-card"><div class="mp-top"><div class="mp-av" style="background:#DBE9FA">🎓</div><div><div class="mp-name">Priya M.</div><div class="mp-role">MIT '27 · Computer Science</div></div><span class="badge badge-go" style="margin-left:auto">Top</span></div><p class="mp-quote">"MIT essays require specificity without bragging. I've reviewed 80+ drafts — happy to look at yours."</p><div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-co">MIT</span><span class="badge badge-pu">STEM</span><span class="badge badge-co">Essays</span></div></div>
+      <div class="mp-card"><div class="mp-top"><div class="mp-av" style="background:#EDE8FA">📐</div><div><div class="mp-name">Karan S.</div><div class="mp-role">Harvard '25 · Economics</div></div><span class="badge badge-go" style="margin-left:auto">Top</span></div><p class="mp-quote">"Harvard's Common App essay isn't about impressing — it's about being genuinely yourself. I help students find that story."</p><div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-pu">Harvard</span><span class="badge badge-pu">Common App</span></div></div>
+      <div class="mp-card"><div class="mp-top"><div class="mp-av" style="background:#D1FAE5">🔬</div><div><div class="mp-name">Sneha R.</div><div class="mp-role">Stanford '27 · Biology</div></div><span class="badge badge-co" style="margin-left:auto">New</span></div><p class="mp-quote">"I got off the Stanford waitlist. I know what eventually made the difference — and I want to help you avoid the same pitfalls."</p><div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-gr">Stanford</span><span class="badge badge-gr">Pre-Med</span></div></div>
+    </div>
+    <div class="view-all"><a class="btn-view" href="mentors.html">Browse all 340+ mentors →</a></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-row">
+    <div class="stat-cell"><div class="stat-n">240+</div><div class="stat-l">US Universities</div><div class="stat-s">T20, LAC, state flagships</div></div>
+    <div class="stat-cell"><div class="stat-n">340+</div><div class="stat-l">Peer Mentors</div><div class="stat-s">Verified top-25 students</div></div>
+    <div class="stat-cell"><div class="stat-n">91%</div><div class="stat-l">Satisfaction Rate</div><div class="stat-s">From beta cohort</div></div>
+    <div class="stat-cell"><div class="stat-n">$18K</div><div class="stat-l">Avg. Aid Gained</div><div class="stat-s">Above initial offer</div></div>
+  </div>
+</section>
+
+<!-- PRICING PREVIEW -->
+<section id="pricing-preview">
+  <div class="wrap">
+    <div class="eyebrow">Pricing</div>
+    <h2 class="section-title">Less than one hour of<br>private counseling.</h2>
+    <p class="section-desc">No hidden fees. No commissions. Transparent pricing that makes genuine guidance accessible to every student.</p>
+    <div class="pp-grid">
+      <div class="pp-card"><div class="plan-n">Explorer</div><div class="plan-p">$0</div><div class="plan-per">Free forever</div><p class="plan-d">Explore colleges and connect with the community.</p><ul class="plan-ul"><li>College search & research</li><li>Community forums</li><li>3 mentor views/month</li><li>Basic deadline calendar</li></ul><a class="btn-plan" href="community.html">Join free</a></div>
+      <div class="pp-card pop"><div class="pop-tag">Most popular</div><div class="plan-n plan-n-i">Guided</div><div class="plan-p plan-p-i">$29</div><div class="plan-per plan-per-i">per month · cancel anytime</div><p class="plan-d plan-d-i">Full mentor access, AI tools, and application tracking.</p><ul class="plan-ul"><li class="i">Unlimited mentor sessions</li><li class="i">AI essay feedback</li><li class="i">Full application tracker</li><li class="i">All deadlines + alerts</li><li class="i">Document storage</li></ul><a class="btn-plan btn-plan-p" href="pricing.html">Start for $29/mo →</a></div>
+      <div class="pp-card"><div class="plan-n">Scholar</div><div class="plan-p">$79</div><div class="plan-per">per month</div><p class="plan-d">Dedicated mentor with weekly 1-on-1 calls.</p><ul class="plan-ul"><li>Everything in Guided</li><li>Dedicated mentor (weekly calls)</li><li>Mock interviews</li><li>Financial aid strategy</li></ul><a class="btn-plan" href="pricing.html">Get Scholar</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testi">
+  <div class="wrap">
+    <div class="eyebrow">Student Stories</div>
+    <h2 class="section-title">Results that speak<br>for themselves.</h2>
+    <p class="section-desc">Beta students saw more acceptances, better aid packages, and far less stress. Here's what they say.</p>
+    <div class="testi-grid">
+      <div class="tc feat">
+        <div>
+          <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+          <p class="tq tq-i">"My CollegeOra mentor went to my top choice school, studied my intended major, and was a first-generation student herself. She understood things my school counselor couldn't have."</p>
+          <div class="ta"><div class="tav tav-i">🎓</div><div><div class="tan tan-i">Marcus T. — Atlanta, GA</div><div class="tas tas-i">Accepted: Cornell, Georgetown, UVA</div></div></div>
+        </div>
+        <div>
+          <div><div class="tr-lbl">Schools applied</div><div class="tr-val">11 universities</div></div>
+          <div class="tr-divider"></div>
+          <div><div class="tr-lbl">Acceptances</div><div class="tr-val">6 of 11</div></div>
+          <div class="tr-divider"></div>
+          <div><div class="tr-lbl">Financial aid negotiated</div><div class="tr-val">$22,000 above offer</div></div>
+          <div class="tr-divider"></div>
+          <div><div class="tr-lbl">Cost vs. private counselor</div><div class="tr-val">Saved $4,200</div></div>
+        </div>
+      </div>
+      <div class="tc"><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div><p class="tq">"The deadline tracker alone saved me twice. I had no idea UChicago's EA was October 28, not November 1."</p><div class="ta"><div class="tav">📱</div><div><div class="tan">Jenna K. — Chicago, IL</div><div class="tas">Accepted: UChicago, Michigan, Indiana</div></div></div></div>
+      <div class="tc"><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div><p class="tq">"My Dartmouth mentor helped me reframe my whole narrative. My counselor kept telling me to talk about achievements. She told me to talk about who I actually am."</p><div class="ta"><div class="tav">✍️</div><div><div class="tan">Amir R. — Houston, TX</div><div class="tas">Accepted: Dartmouth, Vanderbilt, Emory</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand"><div class="footer-logo">College<span>Ora</span></div><p>The platform for ambitious students applying to America's top universities. Built by students, for students.</p></div>
+      <div class="footer-col"><h4>Product</h4><ul><li><a href="how-it-works.html">How it works</a></li><li><a href="mentors.html">Mentors</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="community.html">Community</a></li></ul></div>
+      <div class="footer-col"><h4>Resources</h4><ul><li><a href="#">Blog</a></li><li><a href="#">Common App guide</a></li><li><a href="#">School profiles</a></li><li><a href="#">Scholarship finder</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Become a mentor</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 CollegeOra. All rights reserved.</div>
+      <div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function showScreen(id, btn) {
+  document.querySelectorAll('.screen-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>How It Works — CollegeOra</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── PHASE TABS ── */
+.phase-nav{display:flex;gap:3px;background:rgba(28,45,69,.08);border-radius:var(--r-xl);padding:4px;margin-bottom:52px;flex-wrap:wrap;}
+.phase-tab{flex:1;min-width:120px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 14px;border-radius:14px;border:none;background:transparent;color:var(--text-3);cursor:pointer;transition:all .2s;text-align:center;}
+.phase-tab.active{background:var(--white);color:var(--navy);box-shadow:0 2px 10px rgba(28,45,69,.1);}
+.phase-tab:hover:not(.active){color:var(--cobalt);}
+
+.phase-content{display:none;animation:fadeUp .35s ease forwards;}
+.phase-content.active{display:block;}
+
+/* ── JOURNEY HEADER ── */
+.journey-phase-banner{display:flex;align-items:center;gap:20px;padding:24px 28px;border-radius:var(--r-xl);margin-bottom:40px;}
+.jpb-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;line-height:1;opacity:.25;}
+.jpb-label{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.jpb-title{font-size:20px;font-weight:700;letter-spacing:-.3px;}
+.jpb-sub{font-size:13px;opacity:.65;margin-top:3px;}
+.phase-co{background:var(--cobalt-lt);border:1px solid rgba(59,130,212,.2);}
+.phase-co .jpb-num{color:var(--cobalt);}
+.phase-co .jpb-label{color:var(--cobalt);}
+.phase-go{background:var(--gold-lt);border:1px solid rgba(201,137,58,.2);}
+.phase-go .jpb-num{color:var(--gold);}
+.phase-go .jpb-label{color:var(--gold);}
+.phase-pu{background:var(--purple-lt);border:1px solid rgba(108,79,212,.2);}
+.phase-pu .jpb-num{color:var(--purple);}
+.phase-pu .jpb-label{color:var(--purple);}
+.phase-gr{background:var(--green-lt);border:1px solid rgba(26,122,74,.2);}
+.phase-gr .jpb-num{color:var(--green);}
+.phase-gr .jpb-label{color:var(--green);}
+
+/* ── STEP CARDS ── */
+.steps-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.step-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px 24px;position:relative;transition:all .2s;}
+.step-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(28,45,69,.09);}
+.step-card.full{grid-column:span 2;}
+.step-num-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;margin-bottom:16px;}
+.snb-co{background:var(--cobalt-lt);color:var(--cobalt);}
+.snb-go{background:var(--gold-lt);color:var(--gold);}
+.snb-pu{background:var(--purple-lt);color:var(--purple);}
+.snb-gr{background:var(--green-lt);color:var(--green);}
+.step-card h3{font-size:16px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px;color:var(--navy);}
+.step-card p{font-size:14px;color:var(--text-2);line-height:1.75;margin-bottom:14px;}
+.step-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+.step-tool{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;background:var(--cream);border:1px solid var(--border);color:var(--text-2);display:inline-flex;align-items:center;gap:5px;}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:52px;max-width:680px;}
+.timeline::before{content:'';position:absolute;left:19px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--cobalt),rgba(59,130,212,.08));}
+.tl-item{position:relative;margin-bottom:36px;}
+.tl-item:last-child{margin-bottom:0;}
+.tl-dot{position:absolute;left:-52px;width:38px;height:38px;border-radius:50%;border:2px solid currentColor;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:16px;z-index:1;}
+.tl-content{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px 22px;}
+.tl-content h3{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:6px;}
+.tl-content p{font-size:13px;color:var(--text-2);line-height:1.7;}
+.tl-tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+
+/* ── CHECKLIST ── */
+.checklist{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.cl-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--cream);border-radius:10px;font-size:13px;color:var(--text-2);line-height:1.6;}
+.cl-item .cl-icon{flex-shrink:0;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;}
+.cl-done .cl-icon{background:var(--green-lt);color:var(--green);}
+.cl-pend .cl-icon{background:var(--cobalt-lt);color:var(--cobalt);}
+.cl-warn .cl-icon{background:var(--amber-lt);color:var(--amber);}
+
+/* ── FEATURE HIGHLIGHT (screenshot inside step) ── */
+.step-screenshot{margin-top:16px;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border);}
+.step-ss-bar{background:var(--navy-mid);padding:8px 12px;display:flex;align-items:center;gap:8px;}
+.step-ss-dots{display:flex;gap:4px;}
+.step-ss-dot{width:8px;height:8px;border-radius:50%;}
+.step-ss-title{font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,.4);}
+
+/* ── WHAT HAPPENS TIMELINE ── */
+.timeline-track{position:relative;}
+.timeline-track::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--cobalt),rgba(59,130,212,.1));}
+.tt-row{display:flex;gap:24px;margin-bottom:28px;position:relative;}
+.tt-icon{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;position:relative;z-index:1;border:3px solid var(--white);}
+.tt-body{flex:1;padding-top:6px;}
+.tt-month{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:4px;}
+.tt-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:5px;}
+.tt-desc{font-size:13px;color:var(--text-2);line-height:1.7;}
+.tt-tasks{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;}
+.tt-task{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+
+/* ── DECISION GUIDE ── */
+.dg-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.dg-card{border-radius:var(--r-xl);padding:24px 20px;border:1px solid var(--border);}
+.dg-type{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.dg-name{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.dg-desc{font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:12px;}
+.dg-rule{font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;display:inline-block;}
+.dg-card-ed{background:var(--red-lt);}
+.dg-card-ea{background:var(--amber-lt);}
+.dg-card-rd{background:var(--green-lt);}
+
+/* FAQ */
+.faq-list{max-width:680px;}
+.faq-item{border-bottom:1px solid var(--border);}
+.faq-q{font-size:15px;font-weight:600;padding:18px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:var(--navy);transition:color .15s;}
+.faq-q:hover{color:var(--cobalt);}
+.faq-arrow{font-size:12px;color:var(--text-3);transition:transform .2s;flex-shrink:0;margin-left:12px;}
+.faq-item.open .faq-arrow{transform:rotate(90deg);}
+.faq-a{font-size:14px;color:var(--text-2);line-height:1.75;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:18px;}
+
+/* CTA BAND */
+.cta-band{background:var(--navy);border-radius:var(--r-xl);padding:52px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;}
+.cta-band h2{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;letter-spacing:-.8px;color:var(--cream);max-width:440px;line-height:1.1;}
+.cta-band h2 em{font-style:italic;color:var(--cobalt);}
+.cta-btns{display:flex;gap:12px;flex-shrink:0;}
+.btn-cta{font-size:14px;font-weight:700;padding:13px 26px;border-radius:var(--r-lg);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s;border:none;cursor:pointer;}
+.btn-cta-p{background:var(--cobalt);color:var(--white);}
+.btn-cta-p:hover{background:#2d6cbf;box-shadow:0 4px 18px rgba(59,130,212,.35);}
+.btn-cta-g{background:rgba(255,255,255,.08);color:rgba(246,244,239,.8);border:1.5px solid rgba(255,255,255,.15);}
+.btn-cta-g:hover{background:rgba(255,255,255,.14);}
+
+/* OVERVIEW STRIP */
+.overview-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--r-xl);overflow:hidden;margin-bottom:56px;}
+.ov-cell{background:var(--white);padding:28px 24px;text-align:center;cursor:pointer;transition:background .15s;}
+.ov-cell:hover{background:var(--cobalt-lt);}
+.ov-cell.active{background:var(--navy);}
+.ov-icon{font-size:28px;margin-bottom:10px;}
+.ov-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.ov-cell.active .ov-title{color:var(--cream);}
+.ov-sub{font-size:11px;color:var(--text-3);}
+.ov-cell.active .ov-sub{color:rgba(246,244,239,.4);}
+.ov-phase{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--cobalt);margin-bottom:6px;}
+.ov-cell.active .ov-phase{color:rgba(59,130,212,.7);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">College<span class="dot">Ora</span></a>
+  <ul class="nav-links">
+    <li><a href="how-it-works.html" class="active">How it works</a></li>
+    <li><a href="mentors.html">Mentors</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="community.html">Community</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="btn-ghost" href="login.html">Log in</a>
+    <a class="btn-primary" href="community.html">Join waitlist →</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="bg-grid"></div><div class="orb"></div>
+  <div class="page-hero-content wrap">
+    <div class="page-eyebrow fade-up d1">The Full Journey</div>
+    <h1 class="fade-up d2">Your US application,<br><em>step by step.</em></h1>
+    <p class="fade-up d3">From the first time you open CollegeOra to the day you confirm enrollment — a complete, honest map of the process and exactly how we support you through every stage.</p>
+  </div>
+</div>
+
+<!-- PHASE OVERVIEW -->
+<section style="background:var(--cream)">
+  <div class="wrap">
+    <div class="eyebrow">Journey Overview</div>
+    <h2 class="section-title">Four phases.<br>One clear path.</h2>
+    <p class="section-desc">The US college application process spans 18+ months. We break it into four phases — each with specific goals, tools, and mentor support built in.</p>
+
+    <!-- PHASE OVERVIEW CELLS -->
+    <div class="overview-strip">
+      <div class="ov-cell active" onclick="switchPhase(1,this)">
+        <div class="ov-phase">Phase 1</div>
+        <div class="ov-icon">🏗️</div>
+        <div class="ov-title">Foundation</div>
+        <div class="ov-sub">Grades 10–11 · 6 months</div>
+      </div>
+      <div class="ov-cell" onclick="switchPhase(2,this)">
+        <div class="ov-phase">Phase 2</div>
+        <div class="ov-icon">📋</div>
+        <div class="ov-title">Research & List</div>
+        <div class="ov-sub">Summer before Grade 12</div>
+      </div>
+      <div class="ov-cell" onclick="switchPhase(3,this)">
+        <div class="ov-phase">Phase 3</div>
+        <div class="ov-icon">✍️</div>
+        <div class="ov-title">Writing & Applying</div>
+        <div class="ov-sub">Aug – Jan · Grade 12</div>
+      </div>
+      <div class="ov-cell" onclick="switchPhase(4,this)">
+        <div class="ov-phase">Phase 4</div>
+        <div class="ov-icon">🎉</div>
+        <div class="ov-title">Decisions & Aid</div>
+        <div class="ov-sub">Dec – May · Final stretch</div>
+      </div>
+    </div>
+
+    <!-- PHASE 1: FOUNDATION -->
+    <div class="phase-content active" id="phase-1">
+      <div class="journey-phase-banner phase-co">
+        <div class="jpb-num">1</div>
+        <div>
+          <div class="jpb-label">Phase 1 · Grades 10–11</div>
+          <div class="jpb-title">Foundation — Build the profile that gets you in.</div>
+          <div class="jpb-sub">Most students wait until senior year. The ones who get into top schools start here.</div>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num-badge snb-co">01</div>
+          <h3>Create your CollegeOra profile</h3>
+          <p>Enter your GPA, class rank, standardized test scores (SAT/ACT), and extracurricular activities. CollegeOra builds your baseline academic profile and flags where you stand relative to your target schools' admit ranges.</p>
+          <div class="step-tools">
+            <span class="step-tool">📊 Academic Profile Builder</span>
+            <span class="step-tool">📈 Admit Range Visualizer</span>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num-badge snb-co">02</div>
+          <h3>Get matched with a peer mentor</h3>
+          <p>CollegeOra matches you with a mentor based on your target schools, intended major, background, and application profile. You can browse mentor profiles, read their bios, and request your match directly. Most students are matched within 48 hours.</p>
+          <div class="step-tools">
+            <span class="step-tool">👥 Mentor Matching</span>
+            <span class="step-tool">⭐ 340+ Active Mentors</span>
+          </div>
+          <div class="step-screenshot">
+            <div class="step-ss-bar"><div class="step-ss-dots"><div class="step-ss-dot" style="background:#FF5F57"></div><div class="step-ss-dot" style="background:#FEBC2E"></div><div class="step-ss-dot" style="background:#28C840"></div></div><div class="step-ss-title">Mentor Match Results</div></div>
+            <div style="padding:14px;background:var(--cream);display:flex;flex-direction:column;gap:8px;">
+              <div style="background:var(--white);border:1.5px solid var(--cobalt);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center">
+                <div style="width:36px;height:36px;border-radius:50%;background:#DBE9FA;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🎓</div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:700">Priya M. — MIT '27 · CS</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">98% match · Engineering · First-gen · Top Mentor</div></div>
+                <span class="badge badge-co">Best Match</span>
+              </div>
+              <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;opacity:.7">
+                <div style="width:36px;height:36px;border-radius:50%;background:#EDE8FA;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">📐</div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:700">Karan S. — Harvard '25 · Econ</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">91% match · Social Sciences · Top Mentor</div></div>
+                <span class="badge badge-pu">Strong</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num-badge snb-co">03</div>
+          <h3>Understand the US admissions landscape</h3>
+          <p>Before you build a list, you need to understand how US admissions actually works — what holistic review means, how Early Decision and Early Action differ, and what "demonstrated interest" actually affects. Your mentor walks you through this in your first session.</p>
+          <div class="step-tools">
+            <span class="step-tool">📚 Admissions Explainer</span>
+            <span class="step-tool">🗺️ School Tier Map</span>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num-badge snb-co">04</div>
+          <h3>Strengthen your extracurricular narrative</h3>
+          <p>US admissions isn't just about grades — it's about a coherent story. Your mentor helps you identify the thread connecting your activities, and where you should focus your remaining high school years to build depth, not breadth.</p>
+          <p style="font-size:13px;color:var(--cobalt);font-weight:600;margin-bottom:0">📌 This step is most valuable in Grades 10–11, when you still have time to shape what's on your application.</p>
+          <div class="step-tools">
+            <span class="step-tool">🎯 Activity Audit Tool</span>
+            <span class="step-tool">📝 Narrative Builder</span>
+          </div>
+        </div>
+
+        <div class="step-card full">
+          <div class="step-num-badge snb-co">05</div>
+          <h3>Standardized testing strategy</h3>
+          <p>The SAT/ACT strategy varies massively by target school. Some schools are now test-optional (but a strong score still helps). Others have test-flexible policies. Your CollegeOra dashboard flags the testing policy for every school on your list and gives you a recommended target score based on your profile.</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px">
+            <div style="background:var(--cobalt-lt);border-radius:10px;padding:14px;text-align:center"><div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--cobalt)">1580+</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">MIT Target SAT</div></div>
+            <div style="background:var(--cobalt-lt);border-radius:10px;padding:14px;text-align:center"><div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--cobalt)">1560+</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">Harvard Target SAT</div></div>
+            <div style="background:var(--green-lt);border-radius:10px;padding:14px;text-align:center"><div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--green)">Optional</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">UChicago Policy</div></div>
+            <div style="background:var(--gold-lt);border-radius:10px;padding:14px;text-align:center"><div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--gold)">Required</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">Georgetown Policy</div></div>
+          </div>
+          <div class="step-tools" style="margin-top:14px">
+            <span class="step-tool">🎯 Testing Policy Lookup</span>
+            <span class="step-tool">📊 Score Simulator</span>
+            <span class="step-tool">📅 Test Date Planner</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2: RESEARCH & LIST -->
+    <div class="phase-content" id="phase-2">
+      <div class="journey-phase-banner phase-go">
+        <div class="jpb-num">2</div>
+        <div>
+          <div class="jpb-label">Phase 2 · Summer Before Senior Year</div>
+          <div class="jpb-title">Research & College List — Build the right list, not just a long one.</div>
+          <div class="jpb-sub">The summer before 12th grade is your most valuable research window. Use it.</div>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card full">
+          <div class="step-num-badge snb-go">06</div>
+          <h3>Build your balanced college list</h3>
+          <p>A great list has 10–14 schools balanced across reach, match, and safety tiers — not 20 schools you're not serious about. CollegeOra's AI builds a starting list based on your profile, and your mentor helps refine it based on fit, selectivity trends, and your actual priorities.</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px">
+            <div style="background:var(--red-lt);border-radius:12px;padding:18px">
+              <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:8px">Reach (3–4 schools)</div>
+              <div style="font-size:13px;color:var(--text);line-height:1.8">Schools where your stats are below the 50th percentile. Apply with a strong essay. Long shots, but real ones.</div>
+              <div style="margin-top:8px;font-size:12px;font-weight:600;color:var(--red)">e.g. MIT, Harvard, Stanford, Yale</div>
+            </div>
+            <div style="background:var(--amber-lt);border-radius:12px;padding:18px">
+              <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:8px">Target (4–5 schools)</div>
+              <div style="font-size:13px;color:var(--text);line-height:1.8">Your stats fall in the middle 50%. You have a real shot. These should be schools you'd genuinely be excited to attend.</div>
+              <div style="margin-top:8px;font-size:12px;font-weight:600;color:var(--amber)">e.g. Georgetown, Vanderbilt, UMich</div>
+            </div>
+            <div style="background:var(--green-lt);border-radius:12px;padding:18px">
+              <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:8px">Safety (2–3 schools)</div>
+              <div style="font-size:13px;color:var(--text);line-height:1.8">Schools where you're above the 75th percentile and you're confident you'd get in. Must be schools you'd happily attend.</div>
+              <div style="margin-top:8px;font-size:12px;font-weight:600;color:var(--green)">e.g. UConn Honors, UAlabama Honors</div>
+            </div>
+          </div>
+          <div class="step-tools" style="margin-top:14px">
+            <span class="step-tool">🤖 AI List Builder</span>
+            <span class="step-tool">📊 Admit Range Overlay</span>
+            <span class="step-tool">🔍 School Profile Deep Dives</span>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num-badge snb-go">07</div>
+          <h3>Understand Early vs. Regular Decision</h3>
+          <p>Choosing the right application round is one of the most strategic decisions in the process. Early Decision can boost your admission chances by 15–30% at many schools — but it's binding. CollegeOra walks you through each school's specific policy and helps you decide where, if anywhere, to apply ED.</p>
+          <div style="margin-top:14px">
+            <div class="dg-grid">
+              <div class="dg-card dg-card-ed"><div class="dg-type" style="color:var(--red)">ED / EDII</div><div class="dg-name">Early Decision</div><div class="dg-desc">Binding commitment. You agree to attend if admitted. Significant stat boost at most schools.</div><div class="dg-rule" style="background:var(--red);color:white">Binding ⚠️</div></div>
+              <div class="dg-card dg-card-ea"><div class="dg-type" style="color:var(--amber)">EA / REA</div><div class="dg-name">Early Action</div><div class="dg-desc">Non-binding. Apply early, get an early answer. Some schools have Restrictive EA (REA) — can't apply EA elsewhere.</div><div class="dg-rule" style="background:var(--amber);color:white">Non-binding ✓</div></div>
+              <div class="dg-card dg-card-rd"><div class="dg-type" style="color:var(--green)">RD</div><div class="dg-name">Regular Decision</div><div class="dg-desc">Jan 1–15 deadline. Most applications go here. Lower acceptance rates than ED but more flexibility.</div><div class="dg-rule" style="background:var(--green);color:white">Most Common</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num-badge snb-go">08</div>
+          <h3>Research what each school actually wants</h3>
+          <p>CollegeOra's school profiles go beyond rankings — they tell you what a school's essays have been for the past 3 years, what their admissions blog emphasizes, and what CollegeOra mentors who actually attend each school say was the key to their application.</p>
+          <div class="step-tools" style="margin-top:12px">
+            <span class="step-tool">🏫 240+ School Profiles</span>
+            <span class="step-tool">📝 Historical Essay Prompts</span>
+            <span class="step-tool">💬 Mentor Insider Notes</span>
+          </div>
+          <ul class="checklist" style="margin-top:14px">
+            <li class="cl-item cl-done"><div class="cl-icon">✓</div><span>Review school's Common Data Set for admit stats</span></li>
+            <li class="cl-item cl-done"><div class="cl-icon">✓</div><span>Read school's admissions blog for culture signals</span></li>
+            <li class="cl-item cl-pend"><div class="cl-icon">→</div><span>Talk to CollegeOra mentor who attends the school</span></li>
+            <li class="cl-item cl-pend"><div class="cl-icon">→</div><span>Identify which essays to prioritize writing first</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3: WRITING & APPLYING -->
+    <div class="phase-content" id="phase-3">
+      <div class="journey-phase-banner phase-pu">
+        <div class="jpb-num">3</div>
+        <div>
+          <div class="jpb-label">Phase 3 · August – January, Grade 12</div>
+          <div class="jpb-title">Writing & Applying — The hardest stretch. We're with you every step.</div>
+          <div class="jpb-sub">This is where most students get overwhelmed. We make it manageable.</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:40px">
+        <div class="eyebrow" style="color:var(--purple)">Timeline View</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;letter-spacing:-.5px;color:var(--navy);margin-bottom:24px">What happens each month</h3>
+        <div class="timeline-track">
+          <div class="tt-row">
+            <div class="tt-icon" style="background:var(--cobalt-lt);color:var(--cobalt);border-color:var(--cobalt-lt)">📝</div>
+            <div class="tt-body">
+              <div class="tt-month">August</div>
+              <div class="tt-title">Common App opens. Essays begin.</div>
+              <div class="tt-desc">The Common App opens August 1. Start your personal statement — this is your most important essay and should go through at least 4–5 drafts. Your mentor reviews each draft. AI gives structural feedback inline.</div>
+              <div class="tt-tasks"><span class="badge badge-co">Personal Statement Draft 1</span><span class="badge badge-pu">Activity List Polish</span><span class="badge badge-co">Common App Account Setup</span></div>
+            </div>
+          </div>
+          <div class="tt-row">
+            <div class="tt-icon" style="background:var(--gold-lt);color:var(--gold);border-color:var(--gold-lt)">⚡</div>
+            <div class="tt-body">
+              <div class="tt-month">September</div>
+              <div class="tt-title">Supplement season. Letters of rec sent.</div>
+              <div class="tt-desc">Supplements open as schools release their prompts. Prioritize your ED/EA supplements first. Send your teachers and counselor the "brag sheet" — a document helping them write your letters of recommendation.</div>
+              <div class="tt-tasks"><span class="badge badge-am">Supplements: ED/EA Schools</span><span class="badge badge-go">Rec Letters Requested</span><span class="badge badge-pu">Personal Statement Final</span></div>
+            </div>
+          </div>
+          <div class="tt-row">
+            <div class="tt-icon" style="background:var(--red-lt);color:var(--red);border-color:var(--red-lt)">🔴</div>
+            <div class="tt-body">
+              <div class="tt-month">October – November 1</div>
+              <div class="tt-title">ED/EA deadlines. Maximum pressure. Maximum support.</div>
+              <div class="tt-desc">Most top school early deadlines land November 1. Your dashboard tracks every essay's status, every school's requirements, and every recommender's submission status. Your mentor is on call for last-minute reviews.</div>
+              <div class="tt-tasks"><span class="badge badge-re">MIT EA — Nov 1</span><span class="badge badge-re">Harvard REA — Nov 1</span><span class="badge badge-re">Yale EA — Nov 1</span><span class="badge badge-am">UChicago EA — Oct 28</span></div>
+            </div>
+          </div>
+          <div class="tt-row">
+            <div class="tt-icon" style="background:var(--purple-lt);color:var(--purple);border-color:var(--purple-lt)">📮</div>
+            <div class="tt-body">
+              <div class="tt-month">November – December</div>
+              <div class="tt-title">Regular Decision supplements. Wait for EA results.</div>
+              <div class="tt-desc">While waiting for EA decisions (usually mid-December), you're writing RD supplements. Keep momentum — don't let anxiety about EA decisions stall your RD applications. Your mentor helps you maintain focus.</div>
+              <div class="tt-tasks"><span class="badge badge-pu">RD Supplements</span><span class="badge badge-co">EDII Decisions (if needed)</span><span class="badge badge-gr">EA Results: Mid-December</span></div>
+            </div>
+          </div>
+          <div class="tt-row">
+            <div class="tt-icon" style="background:var(--green-lt);color:var(--green);border-color:var(--green-lt)">✅</div>
+            <div class="tt-body">
+              <div class="tt-month">January 1–15</div>
+              <div class="tt-title">RD deadline push. Final submissions.</div>
+              <div class="tt-desc">Most Regular Decision deadlines fall January 1 (many Ivies and top schools) or January 15. Your CollegeOra tracker shows the exact deadline for every school on your list. This is the last major deadline push.</div>
+              <div class="tt-tasks"><span class="badge badge-gr">Harvard RD — Jan 1</span><span class="badge badge-gr">Yale RD — Jan 1</span><span class="badge badge-gr">Princeton RD — Jan 1</span><span class="badge badge-go">Georgetown — Jan 10</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num-badge snb-pu">09</div>
+          <h3>Write your Common App personal statement</h3>
+          <p>650 words. This is the essay every school sees. The CollegeOra essay editor has all 7 Common App prompts loaded. The AI flags phrasing that sounds generic. Your mentor reads every draft and gives specific, honest feedback — not just encouragement.</p>
+          <ul class="checklist" style="margin-top:12px">
+            <li class="cl-item cl-done"><div class="cl-icon">✓</div><span>Choose your prompt (most students pick "Topic of your choice")</span></li>
+            <li class="cl-item cl-done"><div class="cl-icon">✓</div><span>Draft 1 — get it all out, don't edit</span></li>
+            <li class="cl-item cl-pend"><div class="cl-icon">→</div><span>Share with mentor for structural feedback</span></li>
+            <li class="cl-item cl-pend"><div class="cl-icon">→</div><span>3–5 revision cycles with AI + mentor feedback</span></li>
+            <li class="cl-item cl-warn"><div class="cl-icon">!</div><span>Never have AI write it for you — admissions can tell</span></li>
+          </ul>
+          <div class="step-tools" style="margin-top:12px">
+            <span class="step-tool">✍️ Essay Editor + Versioning</span>
+            <span class="step-tool">🤖 AI Feedback Panel</span>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num-badge snb-pu">10</div>
+          <h3>Write school-specific supplement essays</h3>
+          <p>Every top school asks for supplements — the "Why Us?" essay, activity descriptions, short answers, and more. CollegeOra pre-loads the current year's prompts for all 240+ schools. Your tracker shows which supplements are done, in progress, or not started for every school.</p>
+          <div style="margin-top:14px;background:var(--cream);border-radius:10px;padding:14px">
+            <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Common Supplement Types</div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="font-weight:700;width:80px;color:var(--navy)">"Why Us?"</span><span style="color:var(--text-2)">Required by ~90% of top schools. Most important supplement.</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="font-weight:700;width:80px;color:var(--navy)">Activity</span><span style="color:var(--text-2)">Elaborate on one activity. 150–250 words.</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="font-weight:700;width:80px;color:var(--navy)">Community</span><span style="color:var(--text-2)">How you'll contribute. Short and specific.</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="font-weight:700;width:80px;color:var(--navy)">Intellectual</span><span style="color:var(--text-2)">Academic interest/passion. UChicago's famous prompt.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4: DECISIONS & AID -->
+    <div class="phase-content" id="phase-4">
+      <div class="journey-phase-banner phase-gr">
+        <div class="jpb-num">4</div>
+        <div>
+          <div class="jpb-label">Phase 4 · December – May</div>
+          <div class="jpb-title">Decisions & Aid — Navigate results, negotiate aid, make your choice.</div>
+          <div class="jpb-sub">Most students are completely alone in this phase. CollegeOra stays with you all the way to May 1.</div>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num-badge snb-gr">11</div>
+          <h3>Navigate decisions: EA, EDII, and RD</h3>
+          <p>Decision releases can be stressful. CollegeOra's tracker logs your exact portal release times and sends you a heads-up the morning decisions drop. Your mentor is available to debrief — whether you got in, deferred, waitlisted, or denied.</p>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--green-lt);border-radius:10px;font-size:13px"><span>🎉</span><div><strong style="color:var(--green)">Admitted</strong> — Compare aid packages, reply to campus visit invitations, celebrate.</div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--amber-lt);border-radius:10px;font-size:13px"><span>⏳</span><div><strong style="color:var(--amber)">Deferred</strong> — Send a Letter of Continued Interest (LOCI). Your mentor helps you write it.</div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--cobalt-lt);border-radius:10px;font-size:13px"><span>📋</span><div><strong style="color:var(--cobalt)">Waitlisted</strong> — Write a strong waitlist letter and additional materials. Many waitlists move.</div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:10px;font-size:13px"><span>→</span><div><strong style="color:var(--text-2)">Denied</strong> — Not the end. Your remaining schools and aid packages may be excellent.</div></div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num-badge snb-gr">12</div>
+          <h3>Compare & negotiate financial aid</h3>
+          <p>This is the most financially consequential step — and most students skip it. CollegeOra's aid comparison tool puts all your offers side by side and calculates your actual out-of-pocket cost. Your mentor or financial aid specialist then helps you write an appeal letter.</p>
+          <div style="margin-top:14px;background:var(--cream);border-radius:12px;padding:16px">
+            <div style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Aid Package Comparison</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 10px;background:var(--white);border-radius:8px"><span style="font-weight:700">Cornell</span><span style="color:var(--green);font-weight:700">$42,000/yr aid</span><span style="color:var(--text-3)">$22K out of pocket</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 10px;background:var(--white);border-radius:8px"><span style="font-weight:700">Georgetown</span><span style="color:var(--amber);font-weight:700">$28,000/yr aid</span><span style="color:var(--text-3)">$38K out of pocket</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 10px;background:var(--cobalt-lt);border-radius:8px;border:1px solid rgba(59,130,212,.2)"><span style="font-weight:700;color:var(--cobalt)">After appeal →</span><span style="color:var(--cobalt);font-weight:700">+$14,000</span><span style="color:var(--cobalt)">Georgetown = $24K</span></div>
+            </div>
+          </div>
+          <div class="step-tools" style="margin-top:12px">
+            <span class="step-tool">💰 Aid Comparison Tool</span>
+            <span class="step-tool">✉️ Appeal Letter Templates</span>
+          </div>
+        </div>
+
+        <div class="step-card full">
+          <div class="step-num-badge snb-gr">13</div>
+          <h3>Make your decision — and commit with confidence</h3>
+          <p>By May 1 (National Decision Day), you submit your enrollment deposit to one school and withdraw from all others. CollegeOra helps you make this decision clearly — weighing academics, aid, fit, career outcomes, and your gut. Your mentor has a final debrief session to help you think it through.</p>
+          <p style="font-size:13px;color:var(--green);font-weight:600;margin:12px 0 0">🎓 Once you commit, your CollegeOra journey doesn't end. You get access to the pre-college community — connecting you with other incoming students, current students at your school, and resources for your first year.</p>
+          <div class="step-tools" style="margin-top:14px">
+            <span class="step-tool">📅 May 1 Deadline Tracker</span>
+            <span class="step-tool">🎓 Pre-College Community</span>
+            <span class="step-tool">🏠 Housing & Orientation Prep</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:var(--white)">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2 class="section-title">Common questions,<br>honest answers.</h2>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggle(this)">How is CollegeOra different from hiring a private counselor? <span class="faq-arrow">▶</span></div><div class="faq-a">Private counselors charge $150–300/hour and often handle so many students they can't give you real attention. CollegeOra gives you a mentor who actually attended your target school (not a counselor who went there 20 years ago), plus AI tools that work 24/7, for a fraction of the price. Most students find their CollegeOra mentor more useful than any professional counselor they've worked with.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggle(this)">When should I start using CollegeOra? <span class="faq-arrow">▶</span></div><div class="faq-a">The earlier the better — ideally Grade 10 or 11. But even if you're already a senior, CollegeOra helps. We've had students join in September of 12th grade and still make significant improvements to their applications before early deadlines.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggle(this)">Can I use CollegeOra alongside my high school counselor? <span class="faq-arrow">▶</span></div><div class="faq-a">Absolutely — and most students do. Your school counselor handles the official parts (transcript submission, school profile, recommendation coordination). CollegeOra handles everything else: essay strategy, college list, mentorship, and the tracking work your school counselor doesn't have time for.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggle(this)">What if I'm applying to schools outside the US too? <span class="faq-arrow">▶</span></div><div class="faq-a">CollegeOra is built specifically for US college applications — the Common App, Coalition App, and US-specific school supplements. We don't currently support UK UCAS, Canadian applications, or other international systems. For students applying only to US schools, we're the most complete tool available.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggle(this)">Does CollegeOra write my essays for me? <span class="faq-arrow">▶</span></div><div class="faq-a">No — and we'd strongly advise against using any tool that does. Admissions officers can detect AI-written essays. CollegeOra's AI gives you structural feedback, catches weak spots, and suggests improvements — but your essay stays yours. Your mentor gives honest feedback that helps you write better, not instead of you.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggle(this)">What happens after I get in and commit? <span class="faq-arrow">▶</span></div><div class="faq-a">Your account stays active through your first semester. You get access to the pre-college community, housing tips, and connections to current students at your school. Some CollegeOra mentors even become guides for new students once they're on campus — the community continues.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--cream)">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Start your application<br>the <em>right</em> way.</h2>
+      <div class="cta-btns">
+        <a class="btn-cta btn-cta-p" href="community.html">Join the waitlist →</a>
+        <a class="btn-cta btn-cta-g" href="mentors.html">Meet mentors</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand"><div class="footer-logo">College<span>Ora</span></div><p>The platform for ambitious students applying to America's top universities.</p></div>
+      <div class="footer-col"><h4>Product</h4><ul><li><a href="how-it-works.html">How it works</a></li><li><a href="mentors.html">Mentors</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="community.html">Community</a></li></ul></div>
+      <div class="footer-col"><h4>Resources</h4><ul><li><a href="#">Blog</a></li><li><a href="#">Common App guide</a></li><li><a href="#">School profiles</a></li><li><a href="#">Scholarships</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Become a mentor</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 CollegeOra. All rights reserved.</div>
+      <div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function switchPhase(n, el) {
+  document.querySelectorAll('.phase-content').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ov-cell').forEach(c => c.classList.remove('active'));
+  document.getElementById('phase-' + n).classList.add('active');
+  el.classList.add('active');
+}
+function toggle(el) { el.parentElement.classList.toggle('open'); }
+</script>
+</body>
+</html>
