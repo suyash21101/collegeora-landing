@@ -37,6 +37,17 @@
 .compare-table tr.section-row td{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--cobalt);background:var(--cobalt-lt);padding:9px 18px;}
 .check{color:var(--cobalt);font-weight:700;}.cross{color:var(--text-3);}
 .enterprise{background:var(--cream);border:1px solid var(--border);border-radius:var(--r-xl);padding:44px;display:flex;align-items:center;justify-content:space-between;gap:32px;}
+@media(max-width:768px){
+  .billing-toggle{flex-wrap:wrap;justify-content:flex-start;}
+  .price-grid{grid-template-columns:1fr;}
+  .compare-table{display:block;overflow-x:auto;white-space:nowrap;}
+  .enterprise{flex-direction:column;align-items:flex-start;padding:28px 24px;}
+}
+@media(max-width:480px){
+  .pc{padding:28px 20px;}
+  .pc-price{font-size:46px;}
+  .pop-badge{white-space:normal;text-align:center;max-width:calc(100% - 32px);}
+}
 </style></head><body>
 <nav><a class="nav-logo" href="index.html">College<span class="dot">Ora</span></a><ul class="nav-links"><li><a href="how-it-works.html">How it works</a></li><li><a href="mentors.html">Mentors</a></li><li><a href="pricing.html" class="active">Pricing</a></li><li><a href="community.html">Community</a></li></ul><div class="nav-actions"><a class="btn-ghost" href="login.html">Log in</a><a class="btn-primary" href="community.html">Join waitlist →</a></div></nav>
 <div class="page-hero"><div class="bg-grid"></div><div class="orb"></div><div class="page-hero-content wrap"><div class="page-eyebrow fade-up d1">Pricing</div><h1 class="fade-up d2">Less than one hour of<br><em>private counseling.</em></h1><p class="fade-up d3">Private counselors charge $150–300/hour. CollegeOra gives you better tools and mentors who actually got into your target schools — starting at $29/month.</p></div></div>
