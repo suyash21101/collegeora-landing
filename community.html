@@ -8,6 +8,7 @@
 .form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2396A8BA' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
 .btn-submit{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:var(--r-lg);border:none;background:var(--cobalt);color:var(--white);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;}
 .btn-submit:hover{background:#2d6cbf;transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,130,212,.35);}
+.btn-submit:disabled{opacity:.7;cursor:wait;transform:none;box-shadow:none;}
 .waitlist-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);padding:44px;}
 .success-state{display:none;text-align:center;padding:44px 28px;}
 .success-icon{font-size:48px;margin-bottom:16px;}
@@ -32,6 +33,16 @@
 .wl-avatars{display:flex;}
 .wl-av{width:28px;height:28px;border-radius:50%;border:2px solid var(--white);margin-left:-7px;font-size:13px;display:flex;align-items:center;justify-content:center;background:var(--cobalt);}
 .wl-av:first-child{margin-left:0;}
+.status-modal{position:fixed;inset:0;background:rgba(17,28,45,.58);display:flex;align-items:center;justify-content:center;padding:20px;z-index:1000;opacity:0;pointer-events:none;transition:opacity .2s ease;}
+.status-modal.open{opacity:1;pointer-events:auto;}
+.status-card{width:min(100%,420px);background:var(--white);border-radius:24px;padding:32px 26px;box-shadow:0 28px 80px rgba(17,28,45,.26);text-align:center;position:relative;}
+.status-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border:none;border-radius:50%;background:var(--cream);color:var(--navy);font-size:18px;cursor:pointer;}
+.status-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 18px;}
+.status-icon.success{background:var(--green-lt);color:var(--green);}
+.status-icon.error{background:var(--red-lt);color:var(--red);}
+.status-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--navy);line-height:1.05;margin-bottom:10px;}
+.status-copy{font-size:14px;color:var(--text-2);line-height:1.75;}
+body.modal-open{overflow:hidden;}
 @media(max-width:768px){
   #join .wrap > div{grid-template-columns:1fr !important;gap:36px !important;}
   .form-row{grid-template-columns:1fr;}
@@ -54,18 +65,12 @@
   <div class="waitlist-card" style="margin-top:24px" id="form-card">
     <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:3px">Reserve your spot</div>
     <div style="font-size:13px;color:var(--text-3)">Takes 60 seconds. No credit card needed.</div>
-    <div class="wl-form" id="waitlist-form">
-      <div class="form-row"><div class="form-group"><label class="form-label">First name</label><input class="form-input" type="text" placeholder="Alex"></div><div class="form-group"><label class="form-label">Last name</label><input class="form-input" type="text" placeholder="Thompson"></div></div>
-      <div class="form-group"><label class="form-label">Email address</label><input class="form-input" type="email" placeholder="alex@example.com"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">State</label><input class="form-input" type="text" placeholder="California"></div>
-        <div class="form-group"><label class="form-label">Current grade</label><select class="form-input form-select"><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option selected>Grade 12</option><option>Gap year</option></select></div>
-      </div>
-      <div class="form-group"><label class="form-label">Target school type</label><select class="form-input form-select"><option>Ivy League / T10</option><option>T25 / LACs</option><option selected>Mix of reach, target, safety</option><option>State flagships + selective</option></select></div>
-      <button class="btn-submit" onclick="submitWaitlist()">Join the waitlist →</button>
-      <p style="font-size:12px;color:var(--text-3);text-align:center;margin-top:6px">🔒 No spam. No credit card. Unsubscribe anytime.</p>
-    </div>
-    <div class="success-state" id="success-state"><div class="success-icon">🎉</div><h3>You're on the list!</h3><p>We'll email you at launch with early access and your locked-in $29/month pricing. You're <strong>#4,219</strong> in line.</p></div>
+    <form class="wl-form" id="waitlist-form">
+      <div class="form-row"><div class="form-group"><label class="form-label" for="mce-FNAME">First name</label><input class="form-input" type="text" name="FNAME" id="mce-FNAME" placeholder="Alex"></div><div class="form-group"><label class="form-label" for="mce-LNAME">Last name</label><input class="form-input" type="text" name="LNAME" id="mce-LNAME" placeholder="Thompson"></div></div>
+      <div class="form-group"><label class="form-label" for="mce-EMAIL">Email address</label><input class="form-input" type="email" name="EMAIL" id="mce-EMAIL" placeholder="alex@example.com" required></div>
+      <button class="btn-submit" type="submit" id="waitlist-submit">Join the waitlist →</button>
+      <p style="font-size:12px;color:var(--text-3);text-align:center;margin-top:6px">By joining, you agree to receive launch updates and early-access emails. Unsubscribe anytime.</p>
+    </form>
   </div>
 </div>
 <div>
@@ -90,6 +95,87 @@
   <div class="feed-post"><div class="fp-head"><div class="fp-av" style="background:#D1FAE5">🏆</div><div><div class="fp-name">Marcus T. — Atlanta, GA</div><div class="fp-meta">Grade 12 · Just submitted Cornell EA · today</div></div><span class="badge badge-gr" style="margin-left:auto">Win 🎉</span></div><div class="fp-body">JUST SUBMITTED CORNELL EA! 5 drafts of the "Why Cornell Engineering" supplement over 6 weeks with my mentor Sneha. It finally sounds like me and not a brochure. The deadline tracker saved me from missing the submission portal confirmation step — I had no idea that was a separate thing. So grateful for this community fr 🙏</div><div class="fp-footer"><div class="fp-action">💬 47 replies</div><div class="fp-action">❤️ 134 helpful</div><div class="fp-action">🔖 Save</div></div></div>
 </div>
 </div></section>
+<div class="status-modal" id="status-modal" aria-hidden="true">
+  <div class="status-card" role="dialog" aria-modal="true" aria-labelledby="status-title">
+    <button class="status-close" type="button" id="status-close" aria-label="Close">×</button>
+    <div class="status-icon success" id="status-icon">✓</div>
+    <div class="status-title" id="status-title">You're subscribed</div>
+    <p class="status-copy" id="status-copy">You have successfully subscribed. We'll keep you posted on launch updates and early access.</p>
+  </div>
+</div>
 <footer><div class="wrap"><div class="footer-top"><div class="footer-brand"><div class="footer-logo">College<span>Ora</span></div><p>The platform for ambitious students applying to America's top universities.</p></div><div class="footer-col"><h4>Product</h4><ul><li><a href="how-it-works.html">How it works</a></li><li><a href="mentors.html">Mentors</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="community.html">Community</a></li></ul></div><div class="footer-col"><h4>Resources</h4><ul><li><a href="#">Blog</a></li><li><a href="#">Common App guide</a></li><li><a href="#">School profiles</a></li><li><a href="#">Scholarships</a></li></ul></div><div class="footer-col"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Become a mentor</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul></div></div><div class="footer-bottom"><div class="footer-copy">© 2026 CollegeOra. All rights reserved.</div><div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div></div></div></footer>
-<script>function submitWaitlist(){document.getElementById('waitlist-form').style.display='none';document.getElementById('success-state').style.display='block';}</script>
+<script>
+const waitlistForm = document.getElementById('waitlist-form');
+const waitlistSubmit = document.getElementById('waitlist-submit');
+const statusModal = document.getElementById('status-modal');
+const statusIcon = document.getElementById('status-icon');
+const statusTitle = document.getElementById('status-title');
+const statusCopy = document.getElementById('status-copy');
+const statusClose = document.getElementById('status-close');
+
+function setModalState(kind, title, message) {
+  statusIcon.className = 'status-icon ' + kind;
+  statusIcon.textContent = kind === 'success' ? '✓' : '!';
+  statusTitle.textContent = title;
+  statusCopy.textContent = message;
+  statusModal.classList.add('open');
+  statusModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+}
+
+function closeModal() {
+  statusModal.classList.remove('open');
+  statusModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+}
+
+statusClose.addEventListener('click', closeModal);
+statusModal.addEventListener('click', event => {
+  if (event.target === statusModal) closeModal();
+});
+
+waitlistForm.addEventListener('submit', async event => {
+  event.preventDefault();
+
+  const formData = new FormData(waitlistForm);
+  const payload = {
+    email: formData.get('EMAIL'),
+    firstName: formData.get('FNAME'),
+    lastName: formData.get('LNAME')
+  };
+
+  waitlistSubmit.disabled = true;
+  waitlistSubmit.textContent = 'Submitting...';
+
+  try {
+    const response = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const raw = await response.text();
+    let data = {};
+    if (raw) {
+      try {
+        data = JSON.parse(raw);
+      } catch (error) {
+        data = { error: raw };
+      }
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Subscription failed. Please try again.');
+    }
+
+    waitlistForm.reset();
+    setModalState('success', 'You are subscribed', data.message || 'You have successfully subscribed.');
+  } catch (error) {
+    setModalState('error', 'Subscription failed', error.message || 'Something went wrong. Please try again.');
+  } finally {
+    waitlistSubmit.disabled = false;
+    waitlistSubmit.textContent = 'Join the waitlist →';
+  }
+});
+</script>
 </body></html>
